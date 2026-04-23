@@ -1,15 +1,27 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { StorageAdapter } from '@/adapters/storage-adapter';
 import { parseAxiosError } from '@/utils';
-import { authRefreshToken } from '@/modules/auth/services/authRefresh';
+import { authRefreshToken } from '@/modules/auth/services/auth';
 import { useAuthStore } from '@/modules/auth/store/useAuthStore';
 
-const axiosClient = axios.create({
+const baseConfig: AxiosRequestConfig = {
 	baseURL: process.env.EXPO_PUBLIC_API_URL,
 	headers: {
-		'Content-Type': 'application/json'
+		'Content-Type': 'application/json',
+		'x-client-type': 'mobile'
 	}
-});
+};
+
+export const axiosAuthClient = axios.create(baseConfig);
+
+const axiosClient = axios.create(baseConfig);
+
+axiosAuthClient.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		return Promise.reject(parseAxiosError(error));
+	}
+);
 
 axiosClient.interceptors.request.use(
 	async (config) => {

@@ -24,15 +24,14 @@ export default function AppLayout() {
 			const accessToken = await StorageAdapter.getItem('accessToken');
 
 			try {
-				if (accessToken) {
-					const user = await getUser();
+				if (!accessToken) return;
 
-					useAuthStore.setState({
-						isAuthenticated: true,
-						accessToken: accessToken,
-						user
-					});
-				}
+				const user = await getUser();
+
+				useAuthStore.setState({
+					isAuthenticated: true,
+					user
+				});
 			} catch {
 			} finally {
 				SplashScreen.hideAsync();

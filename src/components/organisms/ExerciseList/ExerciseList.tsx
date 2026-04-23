@@ -54,12 +54,12 @@ export const ExerciseList = ({
 						<Text className="text-center">No exercises available</Text>
 					</View>
 				}
-				contentContainerStyle={{
-					flexGrow: 1,
-					flex: 1,
-					height: 200,
-					paddingBottom: 80
-				}}
+				// contentContainerStyle={{
+				// 	flexGrow: 1,
+				// 	flex: 1,
+				// 	height: 200,
+				// 	paddingBottom: 80
+				// }}
 			/>
 
 			{selectable && selectedExercises.length > 0 && (

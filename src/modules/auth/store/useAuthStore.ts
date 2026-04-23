@@ -5,7 +5,6 @@ import { authLogin, authRegister } from '../services/auth';
 
 export interface AuthStoreState {
 	isAuthenticated: boolean;
-	accessToken: string;
 	user: User | null;
 	login: (email: string, password: string) => Promise<boolean>;
 	register: (name: string, email: string, password: string) => Promise<boolean>;
@@ -14,13 +13,12 @@ export interface AuthStoreState {
 
 export const useAuthStore = create<AuthStoreState>()((set, get) => ({
 	isAuthenticated: false,
-	accessToken: '',
 	user: null,
 	login: async (email: string, password: string) => {
 		const resp = await authLogin(email, password);
 
 		if (!resp) {
-			set({ isAuthenticated: false, accessToken: '', user: null });
+			set({ isAuthenticated: false, user: null });
 			return false;
 		}
 
@@ -30,7 +28,6 @@ export const useAuthStore = create<AuthStoreState>()((set, get) => ({
 
 		set({
 			isAuthenticated: true,
-			accessToken: resp.accessToken,
 			user: resp.user
 		});
 
@@ -49,7 +46,6 @@ export const useAuthStore = create<AuthStoreState>()((set, get) => ({
 
 		set({
 			isAuthenticated: true,
-			accessToken: resp.accessToken,
 			user: resp.user
 		});
 
@@ -61,6 +57,6 @@ export const useAuthStore = create<AuthStoreState>()((set, get) => ({
 
 		await StorageAdapter.removeItem('refreshToken');
 
-		set({ isAuthenticated: false, accessToken: '', user: null });
+		set({ isAuthenticated: false, user: null });
 	}
 }));

@@ -45,7 +45,7 @@ export default function TabsLayout() {
 			<Tabs.Screen
 				name="exercise"
 				options={{
-					title: 'exercise',
+					title: 'Exercise',
 					headerShown: false,
 					popToTopOnBlur: true,
 					tabBarIcon: ({ focused }) => (
