@@ -11,7 +11,7 @@ import {
 import { SecureStorageAdapter } from '@/infrastructure/adapters';
 import { getUser } from '@/modules/auth/services/getUser';
 import { useAuthStore } from '@/modules/auth/store/useAuthStore';
-import { SplashView } from '@/screens/SplashView';
+import { SplashView } from '@/components/screens';
 
 interface AppContextProps {
 	children: ReactNode;
@@ -22,27 +22,27 @@ SplashScreen.preventAutoHideAsync();
 export function AppContextProvider({ children }: AppContextProps) {
 	const [isAppReady, setIsAppReady] = useState(false);
 
-	useEffect(() => {
-		const initAuth = async () => {
-			const accessToken = await SecureStorageAdapter.getItem('accessToken');
+	// useEffect(() => {
+	// 	const initAuth = async () => {
+	// 		const accessToken = await SecureStorageAdapter.getItem('accessToken');
 
-			try {
-				if (!accessToken) return;
+	// 		try {
+	// 			if (!accessToken) return;
 
-				const user = await getUser();
+	// 			const user = await getUser();
 
-				useAuthStore.setState({
-					isAuthenticated: true,
-					user
-				});
-			} catch {
-			} finally {
-				SplashScreen.hideAsync();
-			}
-		};
+	// 			useAuthStore.setState({
+	// 				isAuthenticated: true,
+	// 				user
+	// 			});
+	// 		} catch {
+	// 		} finally {
+	// 			SplashScreen.hideAsync();
+	// 		}
+	// 	};
 
-		initAuth();
-	}, []);
+	// 	initAuth();
+	// }, []);
 
 	return (
 		<KeyboardContextProvider>

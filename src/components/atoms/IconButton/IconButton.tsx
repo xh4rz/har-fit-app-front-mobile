@@ -23,12 +23,6 @@ const sizes = {
 
 const sizesIcon = { xs: 14, sm: 18, md: 24, lg: 28, xl: 32 };
 
-const variantsColor = {
-	primary: 'bg-primary',
-	secondary: 'bg-secondary',
-	outline: 'bg-black/40'
-};
-
 export const IconButton = ({
 	icon,
 	variant = 'primary',
@@ -40,7 +34,6 @@ export const IconButton = ({
 }: IconButtonProps) => {
 	const iconSize = sizesIcon[size];
 	const buttonSizeClass = sizes[size];
-	const buttonVariantClass = variantsColor[variant];
 	const buttonOpacityClass = disabled || loading ? 'opacity-60' : 'opacity-100';
 
 	return (
@@ -49,7 +42,6 @@ export const IconButton = ({
 			className={`
 				items-center justify-center rounded-full
 			 	${buttonSizeClass}
-        		${buttonVariantClass}
         		${buttonOpacityClass}
         		${className ?? ''}
 			`}

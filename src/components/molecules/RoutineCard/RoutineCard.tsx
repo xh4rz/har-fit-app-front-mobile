@@ -3,7 +3,7 @@ import { RoutineResponse } from '@/infrastructure/interfaces';
 import { View } from 'react-native';
 import { Button, IconButton, Text } from '@/components/atoms';
 import { DotsThreeIcon } from 'phosphor-react-native';
-import { colors } from '@/constants/colors';
+import { useThemeColors } from '@/hooks';
 
 interface RoutineCardProps {
 	routine: RoutineResponse;
@@ -11,6 +11,8 @@ interface RoutineCardProps {
 }
 
 export const RoutineCard = ({ routine, onOptionsPress }: RoutineCardProps) => {
+	const colors = useThemeColors();
+
 	return (
 		<View key={routine.id} className="bg-zinc-800 p-4 rounded-lg">
 			<View className="flex flex-row items-center">

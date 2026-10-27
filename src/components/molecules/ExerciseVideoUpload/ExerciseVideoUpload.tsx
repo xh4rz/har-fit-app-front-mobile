@@ -5,7 +5,7 @@ import { VideoPlayer } from '../VideoPlayer';
 import { UploadSimpleIcon } from 'phosphor-react-native';
 import { ExerciseFormData } from '@/modules/exercise/validation/exerciseFormSchema';
 import { Text } from '@/components/atoms';
-import { colors } from '@/constants/colors';
+import { useThemeColors } from '@/hooks';
 
 interface ExerciseVideoUploadProps {
 	videoUri: string;
@@ -20,6 +20,7 @@ export const ExerciseVideoUpload = ({
 	error,
 	loading = false
 }: ExerciseVideoUploadProps) => {
+	const colors = useThemeColors();
 	return (
 		<TouchableOpacity
 			className={`w-full h-72 rounded-xl ${error ? 'border-red-500' : 'border-gray-500'}

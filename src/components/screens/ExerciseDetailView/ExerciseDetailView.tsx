@@ -14,10 +14,12 @@ import {
 	getExerciseById
 } from '@/modules/exercise/services/exercise';
 import { DotsThreeOutlineVerticalIcon } from 'phosphor-react-native';
-import { colors } from '@/constants/colors';
+import { useThemeColors } from '@/hooks';
 
 export const ExerciseDetailView = () => {
 	const { id } = useLocalSearchParams<{ id: string; title: string }>();
+
+	const colors = useThemeColors();
 
 	const router = useRouter();
 
@@ -64,7 +66,7 @@ export const ExerciseDetailView = () => {
 			title: exercise?.title ?? 'Exercise',
 			headerRight: () => (
 				<IconButton
-					icon={<DotsThreeOutlineVerticalIcon color={colors.secondary} />}
+					icon={<DotsThreeOutlineVerticalIcon color={colors.primary} />}
 					onPress={() => setShowModalOptions(true)}
 				/>
 			)

@@ -1,31 +1,32 @@
-import { colors } from '@/constants/colors';
-import { useThemeColors } from '@/hooks';
-import { AntDesign } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
+import { useThemeColors } from '@/hooks';
+import { GearIcon } from 'phosphor-react-native';
 
 export default function ProfileLayout() {
 	const router = useRouter();
 
-	const theme = useThemeColors();
+	const colors = useThemeColors();
 
 	return (
 		<Stack
 			screenOptions={{
 				headerShown: true,
-				headerStyle: { backgroundColor: colors.primary },
-				headerTintColor: colors.secondary,
+				headerStyle: { backgroundColor: colors.background },
+				headerTintColor: colors.primary,
 				headerTitleAlign: 'center',
-				animation: 'slide_from_right',
+				headerTitleStyle: { color: colors.secondary },
+				headerShadowVisible: false,
+				animation: 'slide_from_left',
 				headerRight: () => (
 					<TouchableOpacity
 						onPress={() => router.navigate('/profile/settings')}
 					>
-						<AntDesign name="setting" size={24} color="white" />
+						<GearIcon size={24} color={colors.primary} />
 					</TouchableOpacity>
 				),
 				contentStyle: {
-					backgroundColor: theme.background
+					backgroundColor: colors.background
 				}
 			}}
 		>

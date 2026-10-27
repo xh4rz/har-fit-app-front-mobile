@@ -11,7 +11,6 @@ import {
 	BottomSheetScrollView
 } from '@gorhom/bottom-sheet';
 import { useThemeColors } from '@/hooks';
-import { colors } from '@/constants/colors';
 import { Separator, Text } from '@/components/atoms';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Keyboard } from 'react-native';
@@ -34,7 +33,7 @@ export const BottomSheetModal = ({
 	snapPoints = ['60%', '80%']
 }: BottomSheetModalListProps) => {
 	const insets = useSafeAreaInsets();
-	const theme = useThemeColors();
+	const colors = useThemeColors();
 	const bottomSheetModalRef = useRef<BottomSheetModalGorhom>(null);
 
 	const renderBackdrop = useCallback(
@@ -84,7 +83,7 @@ export const BottomSheetModal = ({
 			ref={bottomSheetModalRef}
 			onDismiss={() => setShow(false)}
 			backdropComponent={renderBackdrop}
-			backgroundStyle={{ backgroundColor: theme.card }}
+			backgroundStyle={{ backgroundColor: colors.card }}
 			handleIndicatorStyle={{ backgroundColor: colors.primary }}
 			{...modalProps}
 		>

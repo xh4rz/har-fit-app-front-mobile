@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { colors } from '@/constants/colors';
 import { useWindowDimensions, View } from 'react-native';
 import {
 	TabView as TabViewReactNavigation,
@@ -7,6 +6,7 @@ import {
 	Route,
 	SceneRendererProps
 } from 'react-native-tab-view';
+import { useThemeColors } from '@/hooks';
 
 interface TabViewProps {
 	routes: Route[];
@@ -21,6 +21,7 @@ export const TabView = ({
 	renderScene,
 	renderHeader
 }: TabViewProps) => {
+	const colors = useThemeColors();
 	const layout = useWindowDimensions();
 	const [index, setIndex] = React.useState(0);
 
