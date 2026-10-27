@@ -1,62 +1,59 @@
-import { StorageAdapter } from '@/adapters/storage-adapter';
-import { User } from '@/infrastructure/interfaces';
 import { create } from 'zustand';
 import { authLogin, authRegister } from '../services/auth';
+
+import { SecureStorageAdapter } from '@/infrastructure/adapters';
+import {
+	AuthLoginRequest,
+	AuthRegisterRequest,
+	AuthResponse,
+	User
+} from '@/infrastructure/interfaces';
 
 export interface AuthStoreState {
 	isAuthenticated: boolean;
 	user: User | null;
-	login: (email: string, password: string) => Promise<boolean>;
-	register: (name: string, email: string, password: string) => Promise<boolean>;
+	loading: boolean;
+	login: (data: AuthLoginRequest) => Promise<AuthResponse>;
+	register: (data: AuthRegisterRequest) => Promise<AuthResponse>;
 	logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStoreState>()((set, get) => ({
 	isAuthenticated: false,
 	user: null,
-	login: async (email: string, password: string) => {
-		const resp = await authLogin(email, password);
+	loading: false,
+	login: async (data) => {
+		set({ loading: true });
+		try {
+			const resp = await authLogin(data);
 
-		if (!resp) {
-			set({ isAuthenticated: false, user: null });
-			return false;
+			await SecureStorageAdapter.setItem('accessToken', resp.accessToken);
+			await SecureStorageAdapter.setItem('refreshToken', resp.refreshToken);
+			set({ isAuthenticated: true, user: resp.user });
+			return resp;
+		} catch (error) {
+			throw error;
+		} finally {
+			set({ loading: false });
 		}
-
-		await StorageAdapter.setItem('accessToken', resp.accessToken);
-
-		await StorageAdapter.setItem('refreshToken', resp.refreshToken);
-
-		set({
-			isAuthenticated: true,
-			user: resp.user
-		});
-
-		return true;
 	},
-	register: async (name: string, email: string, password: string) => {
-		const resp = await authRegister(name, email, password);
-
-		if (!resp) {
-			return false;
+	register: async (data) => {
+		set({ loading: true });
+		try {
+			const resp = await authRegister(data);
+			await SecureStorageAdapter.setItem('accessToken', resp.accessToken);
+			await SecureStorageAdapter.setItem('refreshToken', resp.refreshToken);
+			set({ isAuthenticated: true, user: resp.user });
+			return resp;
+		} catch (error) {
+			throw error;
+		} finally {
+			set({ loading: false });
 		}
-
-		await StorageAdapter.setItem('accessToken', resp.accessToken);
-
-		await StorageAdapter.setItem('refreshToken', resp.refreshToken);
-
-		set({
-			isAuthenticated: true,
-			user: resp.user
-		});
-
-		return true;
 	},
-
 	logout: async () => {
-		await StorageAdapter.removeItem('accessToken');
-
-		await StorageAdapter.removeItem('refreshToken');
-
+		await SecureStorageAdapter.removeItem('accessToken');
+		await SecureStorageAdapter.removeItem('refreshToken');
 		set({ isAuthenticated: false, user: null });
 	}
 }));

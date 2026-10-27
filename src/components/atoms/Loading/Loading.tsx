@@ -1,18 +1,16 @@
-import React, { useContext } from 'react';
 import { ActivityIndicator } from 'react-native';
-import { ThemeContext } from '@/context';
+import { cn } from '@/utils';
 
 interface LoadingProps {
 	size?: number | 'large' | 'small';
+	className?: string;
 }
 
-export const Loading = ({ size = 'large' }: LoadingProps) => {
-	const { theme } = useContext(ThemeContext);
-
+export const Loading = ({ size = 'large', className }: LoadingProps) => {
 	return (
 		<ActivityIndicator
 			size={size}
-			color={theme === 'dark' ? 'white' : 'black'}
+			className={cn('text-foreground', className)}
 		/>
 	);
 };

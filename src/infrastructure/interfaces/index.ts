@@ -4,3 +4,4 @@ export * from './muscle';
 export * from './equipment';
 export * from './api-error';
 export * from './routine';
+export * from './user';

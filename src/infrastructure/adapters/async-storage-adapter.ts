@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export class StorageAdapter {
+export class AsyncStorageAdapter {
 	static async getItem(key: string): Promise<string | null> {
 		try {
 			return await AsyncStorage.getItem(key);
 		} catch (error) {
+			console.error(`Error getting key "${key}":`, error);
 			return null;
 		}
 	}
@@ -15,7 +14,7 @@ export class StorageAdapter {
 		try {
 			await AsyncStorage.setItem(key, value);
 		} catch (error) {
-			throw new Error(`Error setting item ${key} ${value}`);
+			console.error(`Error setting key "${key}":`, error);
 		}
 	}
 
@@ -23,7 +22,7 @@ export class StorageAdapter {
 		try {
 			await AsyncStorage.removeItem(key);
 		} catch (error) {
-			throw new Error(`Error removing item ${key}`);
+			console.error(`Error removing key "${key}":`, error);
 		}
 	}
 }

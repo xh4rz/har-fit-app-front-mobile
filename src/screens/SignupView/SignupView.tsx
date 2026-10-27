@@ -1,156 +1,207 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'expo-router';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { Link, useFocusEffect } from 'expo-router';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 import { useAuthStore } from '@/modules/auth/store/useAuthStore';
 import {
-	passwordValidationRules,
+	passwordRequirements,
+	passwordStrengthColor,
+	passwordStrengthText,
 	signupFormSchema
 } from '@/modules/auth/validation/signupFormSchema';
-import { Input } from '@/components/atoms/Input/Input';
+import { FormInput } from '@/components/molecules';
 import { Button, Text } from '@/components/atoms';
-import { SignInIcon } from 'phosphor-react-native';
-import { setFormError } from '@/utils';
+import { CheckIcon, SignInIcon, XIcon } from 'phosphor-react-native';
+import { cn, setFormError } from '@/utils';
+import { ApiError } from '@/infrastructure/interfaces';
 
 type SignupFormData = z.infer<typeof signupFormSchema>;
 
 export const SignupView = () => {
-	const { register } = useAuthStore();
+	const insets = useSafeAreaInsets();
 
-	const [loading, setLoading] = useState(false);
+	const { register, loading } = useAuthStore();
 
 	const {
 		control,
 		handleSubmit,
 		setError,
 		clearErrors,
-		watch,
 		formState: { errors }
 	} = useForm<SignupFormData>({
 		resolver: zodResolver(signupFormSchema),
 		mode: 'onChange',
 		defaultValues: {
-			fullName: '',
+			username: '',
+			fullname: '',
 			email: '',
 			password: '',
 			confirmPassword: ''
 		}
 	});
 
-	const password = watch('password') || '';
+	const password = useWatch({
+		control,
+		name: 'password',
+		defaultValue: ''
+	});
 
-	const rules = passwordValidationRules.map((rule) => ({
-		label: rule.label,
-		valid: rule.test(password)
+	const passwordChecks = passwordRequirements.map((i) => ({
+		isValid: i.regex.test(password),
+		description: i.text
 	}));
 
+	const passwordStrengthScore = useMemo(() => {
+		return passwordChecks.filter((i) => i.isValid).length;
+	}, [passwordChecks]);
+
 	const onRegister = async (data: SignupFormData) => {
-		setLoading(true);
-		clearErrors('root');
 		try {
-			await register(data.fullName, data.email, data.password);
+			await register(data);
 		} catch (error) {
-			setFormError(setError, error);
-		} finally {
-			setLoading(false);
+			const errorObj = error as ApiError;
+			setFormError(setError, errorObj);
 		}
 	};
 
-	useEffect(() => {
-		const subscription = watch(() => {
-			if (errors.root) {
-				clearErrors('root');
-			}
-		});
-
-		return () => subscription.unsubscribe();
-	}, [watch, errors.root, clearErrors]);
+	useFocusEffect(
+		useCallback(() => {
+			return () => clearErrors();
+		}, [clearErrors])
+	);
 
 	return (
-		<View className=" m-6">
-			<Input
-				autoFocus
-				required
-				autoCapitalize="none"
-				control={control}
-				name="fullName"
-				label="Full Name"
-				placeholder="Enter your Full Name"
-				error={errors.fullName}
-				disabled={loading}
-			/>
+		<View
+			style={{
+				paddingBottom: insets.bottom + 20
+			}}
+			className="flex-1 justify-between p-4"
+		>
+			<View className="flex-1 gap-2">
+				<FormInput
+					autoFocus
+					required
+					autoCapitalize="none"
+					control={control}
+					name="username"
+					label="Username"
+					placeholder="Enter your Username"
+					disabled={loading}
+				/>
 
-			<Input
-				required
-				autoCapitalize="none"
-				keyboardType="email-address"
-				control={control}
-				name="email"
-				label="Email"
-				placeholder="Enter your email"
-				error={errors.email}
-				disabled={loading}
-			/>
+				<FormInput
+					required
+					autoCapitalize="none"
+					control={control}
+					name="fullname"
+					label="Full Name"
+					placeholder="Enter your Full Name"
+					disabled={loading}
+				/>
 
-			<Input
-				required
-				control={control}
-				autoCapitalize="none"
-				name="password"
-				label="Password"
-				placeholder="Enter your password"
-				error={errors.password}
-				isPassword={true}
-				disabled={loading}
-			/>
+				<FormInput
+					required
+					autoCapitalize="none"
+					keyboardType="email-address"
+					control={control}
+					name="email"
+					label="Email"
+					placeholder="Enter your email"
+					disabled={loading}
+				/>
 
-			<Input
-				required
-				control={control}
-				autoCapitalize="none"
-				name="confirmPassword"
-				label="Repeat Password"
-				placeholder="Repeat your password"
-				error={errors.confirmPassword}
-				isPassword={true}
-				disabled={loading}
-			/>
+				<FormInput
+					required
+					control={control}
+					autoCapitalize="none"
+					name="password"
+					label="Password"
+					placeholder="Enter your password"
+					isPassword={true}
+					disabled={loading}
+				/>
 
-			{errors.root && (
-				<Text className="text-red-500 mb-5">{errors.root.message}</Text>
-			)}
+				<FormInput
+					required
+					control={control}
+					autoCapitalize="none"
+					name="confirmPassword"
+					label="Repeat Password"
+					placeholder="Repeat your password"
+					isPassword={true}
+					disabled={loading}
+				/>
 
-			<View>
-				<Text className="text-white mb-2">Password requirements: </Text>
-				{rules.map((rule, index) => (
-					<Text
-						key={index}
-						className={`text-[13px] mb-0.5 ${
-							rule.valid ? 'text-green-500' : 'text-gray-400'
+				<View className="mt-6 w-full max-w-xs gap-2">
+					<View className="mb-4 h-1 w-full flex-row gap-1">
+						{Array.from({ length: 5 }).map((_, index) => (
+							<View
+								key={index}
+								className={cn(
+									'h-full flex-1 rounded-full',
+									index < passwordStrengthScore
+										? passwordStrengthColor(passwordStrengthScore)
+										: 'bg-border'
+								)}
+							/>
+						))}
+					</View>
+					<Text className="text-sm font-medium text-foreground">
+						{passwordStrengthText(passwordStrengthScore)}. Must contain:
+					</Text>
+					<View className="mb-4 gap-1">
+						{passwordChecks.map((i, index) => (
+							<View key={index} className="flex-row items-center gap-2">
+								{i.isValid ? (
+									<CheckIcon size={16} color="#16a34a" weight="bold" />
+								) : (
+									<XIcon size={16} color="#9ca3af" />
+								)}
+
+								<Text
+									className={cn(
+										'text-sm',
+										i.isValid
+											? 'text-green-600 dark:text-green-400'
+											: 'text-muted-foreground'
+									)}
+								>
+									{i.description}
+								</Text>
+							</View>
+						))}
+					</View>
+				</View>
+
+				{errors.root && (
+					<Text className="mb-5 text-destructive">{errors.root.message}</Text>
+				)}
+			</View>
+			<View className="gap-4">
+				<Button
+					title="Register"
+					variant="primary"
+					onPress={handleSubmit(onRegister)}
+					iconLeft={<SignInIcon />}
+					loading={loading}
+				/>
+
+				<View className="flex-row justify-center items-center gap-1">
+					<Text>Already have an account? </Text>
+					<Link
+						disabled={loading}
+						href="/auth/login"
+						className={`font-bold text-secondary ${
+							loading ? 'opacity-50' : 'opacity-100'
 						}`}
 					>
-						{rule.label}
-					</Text>
-				))}
+						Login
+					</Link>
+				</View>
 			</View>
-
-			<Button
-				title="Register"
-				variant="secondary"
-				onPress={handleSubmit(onRegister)}
-				iconLeft={<SignInIcon />}
-				className="mt-5"
-				loading={loading}
-			/>
-
-			<Text className="mt-5 text-center text-primary-theme">
-				Already have an account?{' '}
-				<Link href="/auth/login" className="font-bold text-secondary">
-					Login
-				</Link>
-			</Text>
 		</View>
 	);
 };

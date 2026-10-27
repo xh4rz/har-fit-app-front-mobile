@@ -11,7 +11,7 @@ export default function HomeScreen() {
 					Bienvenido a la aplicación
 				</Text>
 				<Text className="text-primary text-2xl font-bold">
-					{user?.fullName}
+					{user?.fullname}
 				</Text>
 			</View>
 		</View>

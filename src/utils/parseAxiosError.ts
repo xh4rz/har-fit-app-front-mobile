@@ -1,18 +1,22 @@
-import { AxiosError, isAxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { ApiError } from '@/infrastructure/interfaces';
 
 export const parseAxiosError = (error: unknown): ApiError => {
 	if (isAxiosError<ApiError>(error)) {
-		const axiosError: AxiosError<ApiError> = error;
+		if (error.response) {
+			const apiError: ApiError = {
+				message: error.response.data?.message ?? 'Request failed',
+				error: error.response.data?.error ?? error.message,
+				statusCode: error.response.status
+			};
 
-		if (axiosError.response?.data) {
-			console.error('API error response:', axiosError.response.data);
-			return axiosError.response.data;
+			console.error('API error response:', apiError);
+			return apiError;
 		}
 
-		if (axiosError.code === 'ERR_NETWORK') {
+		if (error.code === 'ERR_NETWORK') {
 			const networkError: ApiError = {
-				message: ['Network error. Check your connection'],
+				message: 'Network error. Check your connection',
 				error: 'Network Error',
 				statusCode: 0
 			};
@@ -23,7 +27,7 @@ export const parseAxiosError = (error: unknown): ApiError => {
 	}
 
 	const unknownError: ApiError = {
-		message: ['Unknown error'],
+		message: 'Unknown error. Check your api',
 		error: 'Unknown Error',
 		statusCode: 500
 	};
