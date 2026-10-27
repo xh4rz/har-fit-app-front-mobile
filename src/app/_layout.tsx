@@ -3,8 +3,8 @@ import React from 'react';
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { AppContextProvider } from '@/context/AppContext';
 import { useAuthStore } from '@/modules/auth/store/useAuthStore';
-import { useThemeColors } from '@/hooks';
 import { BackButton } from '@/components/atoms';
+import { useThemeColors } from '@/hooks';
 
 export default function AppLayout() {
 	return (
@@ -59,7 +59,6 @@ function AuthLayout() {
 						options={{ headerTitle: '' }}
 					/>
 				</Stack.Protected>
-
 				<Stack.Protected guard={isAuthenticated}>
 					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 				</Stack.Protected>

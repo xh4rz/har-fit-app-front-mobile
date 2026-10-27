@@ -1,10 +1,42 @@
-import { colors } from '@/constants/colors';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs, usePathname } from 'expo-router';
-import { BarbellIcon, HouseIcon, UserIcon } from 'phosphor-react-native';
+import { useThemeColors } from '@/hooks';
+import { capitalize } from '@/utils';
+import {
+	BarbellIcon,
+	HouseIcon,
+	IdentificationCardIcon,
+	UserIcon,
+	type Icon
+} from 'phosphor-react-native';
+
+interface TabItem {
+	name: string;
+	Icon: Icon;
+}
+
+const tabs: TabItem[] = [
+	{
+		name: 'home',
+		Icon: HouseIcon
+	},
+	{
+		name: 'exercise',
+		Icon: BarbellIcon
+	},
+	{
+		name: 'routine',
+		Icon: IdentificationCardIcon
+	},
+	{
+		name: 'profile',
+		Icon: UserIcon
+	}
+];
 
 export default function TabsLayout() {
 	const pathName = usePathname();
+
+	const colors = useThemeColors();
 
 	const hideTabs = ['/routine/create', '/routine/create/add-exercise'].includes(
 		pathName
@@ -13,74 +45,33 @@ export default function TabsLayout() {
 	return (
 		<Tabs
 			screenOptions={{
-				headerShown: true,
-				headerStyle: { backgroundColor: colors.primary },
-				headerTintColor: colors.secondary,
-				headerTitleAlign: 'center',
+				headerShown: false,
+				sceneStyle: { backgroundColor: colors.background },
 				tabBarActiveTintColor: colors.primary,
-				tabBarInactiveTintColor: 'white',
-				tabBarActiveBackgroundColor: colors.secondary,
-				animation: 'none',
+				tabBarInactiveTintColor: colors.foreground,
+				animation: 'shift',
 				tabBarStyle: {
-					backgroundColor: colors.secondary,
-					display: hideTabs ? 'none' : 'flex'
+					backgroundColor: colors.background,
+					display: hideTabs ? 'none' : 'flex',
+					borderTopWidth: 0,
+					elevation: 0
 				},
 				popToTopOnBlur: true,
 				tabBarHideOnKeyboard: true
 			}}
 			backBehavior="order"
 		>
-			<Tabs.Screen
-				name="home"
-				options={{
-					title: 'Home',
-					headerShown: false,
-					popToTopOnBlur: true,
-					tabBarIcon: ({ focused }) => (
-						<HouseIcon size={24} color={focused ? colors.primary : 'white'} />
-					)
-				}}
-			/>
-
-			<Tabs.Screen
-				name="exercise"
-				options={{
-					title: 'Exercise',
-					headerShown: false,
-					popToTopOnBlur: true,
-					tabBarIcon: ({ focused }) => (
-						<BarbellIcon size={24} color={focused ? colors.primary : 'white'} />
-					)
-				}}
-			/>
-
-			<Tabs.Screen
-				name="routine"
-				options={{
-					title: 'Routine',
-					headerShown: false,
-					popToTopOnBlur: true,
-					tabBarIcon: ({ focused }) => (
-						<MaterialIcons
-							name="fitness-center"
-							size={24}
-							color={focused ? colors.primary : 'white'}
-						/>
-					)
-				}}
-			/>
-
-			<Tabs.Screen
-				name="profile"
-				options={{
-					title: 'Profile',
-					headerShown: false,
-					popToTopOnBlur: true,
-					tabBarIcon: ({ focused }) => (
-						<UserIcon size={24} color={focused ? colors.primary : 'white'} />
-					)
-				}}
-			/>
+			{tabs.map(({ name, Icon }) => (
+				<Tabs.Screen
+					key={name}
+					name={name}
+					options={{
+						title: capitalize(name),
+						popToTopOnBlur: true,
+						tabBarIcon: ({ color }) => <Icon size={24} color={String(color)} />
+					}}
+				/>
+			))}
 		</Tabs>
 	);
 }

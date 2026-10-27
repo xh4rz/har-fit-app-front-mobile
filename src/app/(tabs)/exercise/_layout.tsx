@@ -1,27 +1,24 @@
-import { Stack, useRouter } from 'expo-router';
-import { colors } from '@/constants/colors';
-import { useThemeColors } from '@/hooks';
-import { Button } from '@/components/atoms';
 import { View } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
+import { Button } from '@/components/atoms';
+import { useThemeColors } from '@/hooks';
 
 export default function ExerciseLayout() {
 	const router = useRouter();
-
-	const theme = useThemeColors();
+	const colors = useThemeColors();
 
 	return (
 		<Stack
 			screenOptions={{
 				headerShown: true,
-				headerStyle: { backgroundColor: colors.primary },
-				headerTintColor: colors.secondary,
+				headerStyle: { backgroundColor: colors.background },
+				headerTintColor: colors.primary,
 				headerTitleAlign: 'center',
-				headerTitleStyle: {
-					color: 'white'
-				},
+				headerTitleStyle: { color: colors.secondary },
+				headerShadowVisible: false,
 				animation: 'slide_from_left',
 				contentStyle: {
-					backgroundColor: theme.background
+					backgroundColor: colors.background
 				}
 			}}
 		>
@@ -34,9 +31,8 @@ export default function ExerciseLayout() {
 						<View>
 							<Button
 								title="Create"
-								variant="outline"
+								variant="primary"
 								fullWidth={false}
-								textClassName="text-secondary font-bold"
 								onPress={() =>
 									router.push({
 										pathname: '/exercise/create'
@@ -47,7 +43,6 @@ export default function ExerciseLayout() {
 					)
 				}}
 			/>
-
 			<Stack.Screen
 				name="create/index"
 				options={{
@@ -55,7 +50,6 @@ export default function ExerciseLayout() {
 					title: 'Create Exercise'
 				}}
 			/>
-
 			<Stack.Screen
 				name="edit/[id]"
 				options={{

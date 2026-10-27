@@ -13,7 +13,7 @@ const themeOptions: { value: ThemeName; label: string; icon: string }[] = [
 
 export default function ThemeScreen() {
 	const { selectedTheme, setTheme } = useContext(ThemeContext);
-	const themeColors = useThemeColors();
+	const colors = useThemeColors();
 
 	return (
 		<View className="flex-1">
@@ -27,27 +27,21 @@ export default function ThemeScreen() {
 						className="flex-row items-center p-4"
 						style={{
 							backgroundColor:
-								selectedTheme === option.value
-									? themeColors.secondary
-									: themeColors.card
+								selectedTheme === option.value ? colors.secondary : colors.card
 						}}
 					>
 						<Feather
 							name={option.icon as any}
 							size={24}
 							color={
-								selectedTheme === option.value
-									? 'white'
-									: themeColors.foreground
+								selectedTheme === option.value ? 'white' : colors.foreground
 							}
 						/>
 						<Text
 							className="ml-4 flex-1"
 							style={{
 								color:
-									selectedTheme === option.value
-										? 'white'
-										: themeColors.foreground
+									selectedTheme === option.value ? 'white' : colors.foreground
 							}}
 						>
 							{option.label}

@@ -8,9 +8,8 @@ import {
 } from 'react-hook-form';
 import { Button, IconButton, Text } from '@/components/atoms';
 import { PlusIcon, XIcon } from 'phosphor-react-native';
-import { colors } from '@/constants/colors';
 import { ExerciseFormData } from '@/modules/exercise/validation/exerciseFormSchema';
-import { useKeyboard } from '@/hooks';
+import { useKeyboard, useThemeColors } from '@/hooks';
 
 interface ExerciseInstructionsProps {
 	control: Control<ExerciseFormData>;
@@ -21,6 +20,8 @@ export const ExerciseInputInstructions = ({
 	control,
 	error
 }: ExerciseInstructionsProps) => {
+	const colors = useThemeColors();
+
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'instruction'

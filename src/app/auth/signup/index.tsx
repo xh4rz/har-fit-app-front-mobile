@@ -1,5 +1,5 @@
 import { KeyboardScrollViewLayout } from '@/components/templates';
-import { SignupView } from '@/screens/SignupView';
+import { SignupView } from '@/components/screens';
 
 export default function SignupScreen() {
 	return (

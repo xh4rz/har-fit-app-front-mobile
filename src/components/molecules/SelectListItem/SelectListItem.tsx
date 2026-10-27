@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Checkbox, Image, Text } from '@/components/atoms';
-import { colors } from '@/constants/colors';
+import { useThemeColors } from '@/hooks';
 import { CheckIcon } from 'phosphor-react-native';
 
 type BaseSelectItem = {
@@ -25,6 +25,7 @@ export const SelectListItem = <T extends BaseSelectItem>({
 	multiple = false,
 	imageScale = 1
 }: SelectListItemProps<T>) => {
+	const colors = useThemeColors();
 	const isSelected = selectedIds.includes(item.id);
 
 	return (

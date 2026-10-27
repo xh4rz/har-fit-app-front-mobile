@@ -1,4 +1,4 @@
-import { RoutineView } from '@/screens/RoutineView';
+import { RoutineView } from '@/components/screens';
 
 export default function RoutineScreen() {
 	return <RoutineView />;

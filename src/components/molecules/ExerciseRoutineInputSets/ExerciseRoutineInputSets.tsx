@@ -8,9 +8,8 @@ import {
 } from 'react-hook-form';
 import { Button, IconButton, Text } from '@/components/atoms';
 import { PlusIcon, XIcon } from 'phosphor-react-native';
-import { colors } from '@/constants/colors';
 import { RoutineFormData } from '@/modules/routine/validation/routineFormSchema';
-import { useKeyboard } from '@/hooks';
+import { useKeyboard, useThemeColors } from '@/hooks';
 
 interface ExerciseRoutineInputSetsProps {
 	control: Control<RoutineFormData>;
@@ -25,6 +24,8 @@ export const ExerciseRoutineInputSets = ({
 	exerciseIndex,
 	error
 }: ExerciseRoutineInputSetsProps) => {
+	const colors = useThemeColors();
+
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: `exercises.${exerciseIndex}.sets`

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Checkbox as RNCheckbox } from 'expo-checkbox';
-import { colors } from '@/constants/colors';
+import { useThemeColors } from '@/hooks';
 
 interface CheckboxProps {
 	isChecked: boolean;
@@ -13,6 +13,8 @@ export const Checkbox = ({
 	onChange,
 	className = ''
 }: CheckboxProps) => {
+	const colors = useThemeColors();
+
 	return (
 		<RNCheckbox
 			value={isChecked}

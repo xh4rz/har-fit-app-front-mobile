@@ -7,7 +7,7 @@ import {
 	TrashIcon
 } from 'phosphor-react-native';
 import { Text } from '@/components/atoms';
-import { colors } from '@/constants/colors';
+import { useThemeColors } from '@/hooks';
 
 interface Props {
 	show: boolean;
@@ -22,6 +22,8 @@ export const BottomSheetRoutineOptions = ({
 	onEditRoutine,
 	onDeleteRoutine
 }: Props) => {
+	const colors = useThemeColors();
+
 	const sections = [
 		{
 			title: 'Edit Routine',
@@ -30,7 +32,7 @@ export const BottomSheetRoutineOptions = ({
 		},
 		{
 			title: 'Delete Routine',
-			icon: <TrashIcon color={colors.error} />,
+			icon: <TrashIcon color={colors.destructive} />,
 			onPress: onDeleteRoutine
 		}
 	];
@@ -50,13 +52,14 @@ export const BottomSheetRoutineOptions = ({
 					>
 						{i.icon}
 						<Text
-							className={`${index === 1 ? 'text-red-500' : 'text-white'} font-medium flex-1`}
+							variant={`${index === 1 ? 'error' : 'default'}`}
+							className="font-medium flex-1"
 						>
 							{i.title}
 						</Text>
 						<CaretRightIcon
 							size={14}
-							color={index === 1 ? colors.error : 'white'}
+							color={index === 1 ? colors.destructive : colors.foreground}
 						/>
 					</TouchableOpacity>
 				))}

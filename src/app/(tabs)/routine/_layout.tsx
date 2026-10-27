@@ -1,10 +1,9 @@
 import { Stack, useFocusEffect } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { useThemeColors } from '@/hooks';
 import { useRoutineStore } from '@/modules/routine/store/useRoutineStore';
 
 export default function RoutineLayout() {
-	const theme = useThemeColors();
+	const colors = useThemeColors();
 
 	const clearRoutine = useRoutineStore((state) => state.clearRoutine);
 
@@ -18,15 +17,14 @@ export default function RoutineLayout() {
 		<Stack
 			screenOptions={{
 				headerShown: true,
-				headerStyle: { backgroundColor: colors.primary },
-				headerTintColor: colors.secondary,
+				headerStyle: { backgroundColor: colors.background },
+				headerTintColor: colors.primary,
 				headerTitleAlign: 'center',
-				headerTitleStyle: {
-					color: 'white'
-				},
-				animation: 'slide_from_right',
+				headerTitleStyle: { color: colors.secondary },
+				headerShadowVisible: false,
+				animation: 'slide_from_left',
 				contentStyle: {
-					backgroundColor: theme.background
+					backgroundColor: colors.background
 				}
 			}}
 		>
@@ -34,7 +32,6 @@ export default function RoutineLayout() {
 				name="index"
 				options={{ headerShown: true, title: 'Routine' }}
 			/>
-
 			<Stack.Screen
 				name="create/index"
 				options={{
@@ -42,7 +39,6 @@ export default function RoutineLayout() {
 					title: 'Create Rutine'
 				}}
 			/>
-
 			<Stack.Screen
 				name="create/add-exercise/index"
 				options={{
@@ -50,7 +46,6 @@ export default function RoutineLayout() {
 					title: 'Select the exercise'
 				}}
 			/>
-
 			<Stack.Screen
 				name="edit/[id]"
 				options={{
