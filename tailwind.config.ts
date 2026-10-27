@@ -1,11 +1,10 @@
-import { colors } from './src/constants/colors';
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
 		'./App.tsx',
 		'./src/app/**/*.{js,jsx,ts,tsx}',
 		'./src/components/**/*.{js,jsx,ts,tsx}',
+		'./src/context/**/*.{js,jsx,ts,tsx}',
 		'./src/modules/**/*.{js,jsx,ts,tsx}',
 		'./src/screens/**/*.{js,jsx,ts,tsx}'
 	],
@@ -13,45 +12,21 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
-				primary: colors.primary,
-				secondary: colors.secondary,
-
-				error: colors.error,
-
-				'bg-light': colors.light.background,
-				'bg-dark': colors.dark.background,
-
-				'bg-card-light': colors.light.backgroundCard,
-				'bg-card-dark': colors.dark.backgroundCard,
-
-				'text-primary-light': colors.light.textPrimary,
-				'text-primary-dark': colors.dark.textPrimary,
-
-				'text-secondary-light': colors.light.textSecondary,
-				'text-secondary-dark': colors.dark.textSecondary
+				primary: 'var(--primary)',
+				secondary: 'var(--secondary)',
+				background: 'var(--background)',
+				card: 'var(--card)',
+				foreground: 'var(--foreground)',
+				muted: 'var(--muted)',
+				'muted-foreground': 'var(--muted-foreground)',
+				input: 'var(--input)',
+				border: 'var(--border)',
+				ring: 'var(--ring)',
+				destructive: 'var(--destructive)',
+				'destructive-focused': 'var(--destructive-focused)',
+				'destructive-focused-background':
+					'var(--destructive-focused-background)'
 			}
 		}
-	},
-	plugins: [
-		function ({
-			addComponents
-		}: {
-			addComponents: (components: Record<string, unknown>) => void;
-		}) {
-			addComponents({
-				'.bg-theme': {
-					'@apply bg-bg-light dark:bg-bg-dark': {}
-				},
-				'.bg-card-theme': {
-					'@apply bg-bg-card-light dark:bg-bg-card-dark': {}
-				},
-				'.text-primary-theme': {
-					'@apply text-text-primary-light dark:text-text-primary-dark': {}
-				},
-				'.text-secondary-theme': {
-					'@apply text-text-secondary-light dark:text-text-secondary-dark': {}
-				}
-			});
-		}
-	]
+	}
 };

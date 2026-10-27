@@ -84,7 +84,7 @@ export const BottomSheetModal = ({
 			ref={bottomSheetModalRef}
 			onDismiss={() => setShow(false)}
 			backdropComponent={renderBackdrop}
-			backgroundStyle={{ backgroundColor: theme.backgroundCard }}
+			backgroundStyle={{ backgroundColor: theme.card }}
 			handleIndicatorStyle={{ backgroundColor: colors.primary }}
 			{...modalProps}
 		>

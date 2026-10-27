@@ -1,6 +1,16 @@
 import { User } from '..';
 
-export interface Auth extends Token {
+export interface AuthLoginRequest {
+	email: string;
+	password: string;
+}
+export interface AuthRegisterRequest {
+	username: string;
+	fullname: string;
+	email: string;
+	password: string;
+}
+export interface AuthResponse extends Token {
 	user: User;
 }
 

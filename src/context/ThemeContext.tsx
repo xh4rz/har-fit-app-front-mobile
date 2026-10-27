@@ -1,7 +1,9 @@
 import React, { createContext, useEffect, ReactNode, useState } from 'react';
+import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useColorScheme } from 'nativewind';
+import { themes } from '@/theme';
+import { AsyncStorageAdapter } from '@/infrastructure/adapters';
 
 export type ThemeName = 'light' | 'dark' | 'system';
 
@@ -33,7 +35,7 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
 
 	const loadSavedTheme = async () => {
 		try {
-			const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
+			const savedTheme = await AsyncStorageAdapter.getItem(THEME_STORAGE_KEY);
 
 			if (
 				savedTheme === 'light' ||
@@ -55,7 +57,7 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
 
 	const setTheme = async (newTheme: ThemeName) => {
 		try {
-			await AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme);
+			await AsyncStorageAdapter.setItem(THEME_STORAGE_KEY, newTheme);
 			setSelectedTheme(newTheme);
 			setColorScheme(newTheme);
 		} catch (error) {
@@ -71,8 +73,10 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
 				setTheme
 			}}
 		>
-			<StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-			{children}
+			<StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+			<View className="flex-1" style={themes[theme]}>
+				{children}
+			</View>
 		</ThemeContext.Provider>
 	);
 };

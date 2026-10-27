@@ -1,11 +1,16 @@
-import { axiosAuthClient } from '@/api/axiosClient';
-import { Auth, Token } from '@/infrastructure/interfaces';
+import { axiosAuthClient } from '@/api/axiosAuthClient';
+import {
+	AuthLoginRequest,
+	AuthRegisterRequest,
+	AuthResponse,
+	Token
+} from '@/infrastructure/interfaces';
 
-export const authLogin = async (email: string, password: string) => {
+export const authLogin = async ({ email, password }: AuthLoginRequest) => {
 	email = email.toLowerCase();
 
 	try {
-		const { data } = await axiosAuthClient.post<Auth>('/auth/login', {
+		const { data } = await axiosAuthClient.post<AuthResponse>('/auth/login', {
 			email,
 			password
 		});
@@ -16,17 +21,22 @@ export const authLogin = async (email: string, password: string) => {
 	}
 };
 
-export const authRegister = async (
-	name: string,
-	email: string,
-	password: string
-) => {
+export const authRegister = async ({
+	username,
+	fullname,
+	email,
+	password
+}: AuthRegisterRequest) => {
 	try {
-		const { data } = await axiosAuthClient.post<Auth>('/auth/register', {
-			fullName: name,
-			email,
-			password
-		});
+		const { data } = await axiosAuthClient.post<AuthResponse>(
+			'/auth/register',
+			{
+				username,
+				fullname,
+				email,
+				password
+			}
+		);
 
 		return data;
 	} catch (error) {

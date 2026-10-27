@@ -1,8 +1,12 @@
-// src/hooks/useThemeColors.ts
-import { useColorScheme } from 'nativewind';
+import { useContext } from 'react';
+import { ThemeContext } from '@/context';
 import { colors } from '@/constants/colors';
 
 export const useThemeColors = () => {
-	const { colorScheme } = useColorScheme();
-	return colorScheme === 'dark' ? colors.dark : colors.light;
+	const { theme } = useContext(ThemeContext);
+	return {
+		...colors[theme],
+		primary: colors.primary,
+		secondary: colors.secondary
+	};
 };

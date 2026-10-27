@@ -40,7 +40,7 @@ export const SplashView = ({ onFinish }: { onFinish: () => void }) => {
 	return (
 		<Animated.View
 			style={{ opacity: containerOpacity }}
-			className="flex-1 bg-theme items-center justify-center"
+			className="flex-1 bg-background items-center justify-center"
 		>
 			<Loading />
 			<View className="flex-row">

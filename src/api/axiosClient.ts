@@ -1,31 +1,15 @@
-import axios, { AxiosRequestConfig } from 'axios';
-import { StorageAdapter } from '@/adapters/storage-adapter';
-import { parseAxiosError } from '@/utils';
+import axios from 'axios';
+import { baseConfig } from './axiosConfig';
 import { authRefreshToken } from '@/modules/auth/services/auth';
 import { useAuthStore } from '@/modules/auth/store/useAuthStore';
-
-const baseConfig: AxiosRequestConfig = {
-	baseURL: process.env.EXPO_PUBLIC_API_URL,
-	headers: {
-		'Content-Type': 'application/json',
-		'x-client-type': 'mobile'
-	}
-};
-
-export const axiosAuthClient = axios.create(baseConfig);
+import { SecureStorageAdapter } from '@/infrastructure/adapters';
+import { parseAxiosError } from '@/utils';
 
 const axiosClient = axios.create(baseConfig);
 
-axiosAuthClient.interceptors.response.use(
-	(response) => response,
-	(error) => {
-		return Promise.reject(parseAxiosError(error));
-	}
-);
-
 axiosClient.interceptors.request.use(
 	async (config) => {
-		const accessToken = await StorageAdapter.getItem('accessToken');
+		const accessToken = await SecureStorageAdapter.getItem('accessToken');
 
 		if (accessToken) {
 			config.headers.Authorization = `Bearer ${accessToken}`;
@@ -49,7 +33,7 @@ axiosClient.interceptors.response.use(
 			originalRequest._retry = true;
 
 			try {
-				const refreshToken = await StorageAdapter.getItem('refreshToken');
+				const refreshToken = await SecureStorageAdapter.getItem('refreshToken');
 
 				if (!refreshToken) {
 					throw new Error('No refresh token available');
@@ -57,8 +41,8 @@ axiosClient.interceptors.response.use(
 
 				const data = await authRefreshToken(refreshToken);
 
-				await StorageAdapter.setItem('accessToken', data.accessToken);
-				await StorageAdapter.setItem('refreshToken', data.refreshToken);
+				await SecureStorageAdapter.setItem('accessToken', data.accessToken);
+				await SecureStorageAdapter.setItem('refreshToken', data.refreshToken);
 
 				originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 

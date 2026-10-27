@@ -2,9 +2,9 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useFocusEffect, useNavigation, useRouter } from 'expo-router';
 import { View } from 'react-native';
 import { BarbellIcon, PlusIcon } from 'phosphor-react-native';
-import { Button, Input, Text } from '@/components/atoms';
+import { Button, Text } from '@/components/atoms';
 import { useRoutineStore } from '@/modules/routine/store/useRoutineStore';
-import { ExerciseRoutineItem } from '@/components/molecules';
+import { ExerciseRoutineItem, FormInput } from '@/components/molecules';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -107,7 +107,7 @@ export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 					variant="secondary"
 					fullWidth={false}
 					disabled={!hasExercises()}
-					textClassName="text-secondary font-bold"
+					className="text-secondary font-bold"
 					onPress={handleSubmit(onSaveRoutine)}
 					loading={loading}
 				/>
@@ -164,13 +164,12 @@ export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 
 	return (
 		<View className="flex-1 items-center p-5 gap-4">
-			<Input
+			<FormInput
 				required
 				autoCapitalize="words"
 				control={control}
 				name="title"
 				placeholder="Enter Routine Title *"
-				error={errors.title}
 				variant="line"
 			/>
 

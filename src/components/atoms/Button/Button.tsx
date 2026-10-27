@@ -1,95 +1,122 @@
-import {
-	ActivityIndicator,
-	Text,
-	TouchableOpacity,
-	TouchableOpacityProps,
-	View
-} from 'react-native';
-import { ReactElement, cloneElement } from 'react';
-import { IconProps } from 'phosphor-react-native';
+import { cloneElement, type ReactElement } from 'react';
+import { Pressable, type PressableProps } from 'react-native';
+import { Text } from '../Text';
+import { Loading } from '../Loading';
+import { cn } from '@/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
+import type { IconProps } from 'phosphor-react-native';
 
-interface ButtonProps extends TouchableOpacityProps {
-	title: string;
-	variant?: 'primary' | 'secondary' | 'outline' | 'error';
-	size?: 'sm' | 'md' | 'lg' | 'xl';
-	loading?: boolean;
-	iconLeft?: ReactElement<IconProps>;
-	bg?: string;
-	fullWidth?: boolean;
-	textClassName?: string;
-}
+const buttonVariants = cva(
+	'flex-row items-center justify-center gap-2 rounded-lg p-2',
+	{
+		variants: {
+			variant: {
+				primary: 'bg-primary',
+				secondary: 'bg-secondary',
+				outline: 'border border-secondary bg-transparent',
+				error: 'bg-destructive',
+				icon: 'bg-transparent'
+			},
+			size: {
+				xs: 'min-h-6',
+				sm: 'min-h-9',
+				md: 'min-h-10',
+				lg: 'min-h-12',
+				xl: 'min-h-14'
+			}
+		},
+		defaultVariants: {
+			variant: 'primary',
+			size: 'md'
+		}
+	}
+);
 
-const variants = {
-	primary: 'bg-primary',
-	secondary: 'bg-secondary',
-	outline: 'bg-transparent border border-primary',
-	error: 'bg-error'
-};
+const textVariants = cva('font-semibold', {
+	variants: {
+		variant: {
+			primary: 'text-white',
+			secondary: 'text-white',
+			outline: 'text-secondary',
+			error: 'text-white',
+			icon: 'text-foreground'
+		},
+		size: {
+			xs: 'text-xs',
+			sm: 'text-sm',
+			md: 'text-base',
+			lg: 'text-lg',
+			xl: 'text-xl'
+		}
+	},
+	defaultVariants: {
+		variant: 'primary',
+		size: 'md'
+	}
+});
 
-const textVariants = {
-	primary: 'text-white',
-	secondary: 'text-white',
-	outline: 'text-primary',
-	error: 'text-white'
-};
-
-const sizes = {
-	sm: { text: 'text-sm' },
-	md: { text: 'text-base' },
-	lg: { text: 'text-lg' },
-	xl: { text: 'text-xl' }
-};
+type ButtonProps = Omit<PressableProps, 'children'> &
+	VariantProps<typeof buttonVariants> & {
+		title?: string;
+		icon?: ReactElement<IconProps>;
+		iconLeft?: ReactElement<IconProps>;
+		iconRight?: ReactElement<IconProps>;
+		loading?: boolean;
+		fullWidth?: boolean;
+	};
 
 export const Button = ({
 	title,
-	variant = 'primary',
-	size = 'md',
-	loading = false,
+	icon,
 	iconLeft,
-	bg,
+	iconRight,
 	fullWidth = true,
-	textClassName,
+	loading = false,
+	size,
+	variant,
 	className,
 	disabled,
-	...rest
+	...props
 }: ButtonProps) => {
+	const isDisabled = disabled || loading;
+
+	const renderIcon = (element: ReactElement<IconProps>) =>
+		cloneElement(element, {
+			color: element.props.color ?? 'white'
+		});
+
 	return (
-		<TouchableOpacity
-			className={`
-				flex-row gap-2 justify-center items-center
-				p-2 rounded-lg
-				${fullWidth ? 'w-full' : 'self-start'}
-				${bg ?? variants[variant]}
-				${disabled || loading ? 'opacity-60' : 'opacity-100'}
-				${className ?? ''}
-			`}
-			disabled={disabled || loading}
-			{...rest}
+		<Pressable
+			className={cn(
+				buttonVariants({ variant, size }),
+				fullWidth && !icon ? 'w-full' : 'self-start',
+				isDisabled && 'opacity-60',
+				className
+			)}
+			disabled={isDisabled}
+			{...props}
 		>
 			{loading ? (
-				<ActivityIndicator color="white" />
+				<Loading size="small" className="text-white" />
+			) : icon ? (
+				renderIcon(icon)
 			) : (
 				<>
-					{iconLeft && (
-						<View>
-							{cloneElement(iconLeft, {
-								color: iconLeft.props.color ?? 'white'
-							})}
-						</View>
+					{iconLeft && renderIcon(iconLeft)}
+
+					{title && (
+						<Text
+							numberOfLines={1}
+							size="inherit"
+							className={cn(textVariants({ variant, size }))}
+						>
+							{title}
+						</Text>
 					)}
 
-					<Text
-						numberOfLines={1}
-						className={`
-							${textVariants[variant]}
-							${sizes[size].text}
-							${textClassName ?? ''}
-						`}
-					>
-						{title}
-					</Text>
+					{iconRight && renderIcon(iconRight)}
 				</>
 			)}
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
