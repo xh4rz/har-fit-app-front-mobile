@@ -9,9 +9,9 @@ import {
 	ThemeContextProvider
 } from './';
 import { SecureStorageAdapter } from '@/infrastructure/adapters';
-import { getUser } from '@/modules/auth/services/getUser';
-import { useAuthStore } from '@/modules/auth/store/useAuthStore';
 import { SplashView } from '@/components/screens';
+import { useAuthStore } from '@/modules/auth/store/useAuthStore';
+import { getUser } from '@/modules/user/service';
 
 interface AppContextProps {
 	children: ReactNode;
@@ -22,27 +22,24 @@ SplashScreen.preventAutoHideAsync();
 export function AppContextProvider({ children }: AppContextProps) {
 	const [isAppReady, setIsAppReady] = useState(false);
 
-	// useEffect(() => {
-	// 	const initAuth = async () => {
-	// 		const accessToken = await SecureStorageAdapter.getItem('accessToken');
+	useEffect(() => {
+		const initAuth = async () => {
+			const accessToken = await SecureStorageAdapter.getItem('accessToken');
 
-	// 		try {
-	// 			if (!accessToken) return;
+			if (!accessToken) return;
 
-	// 			const user = await getUser();
+			try {
+				const user = await getUser();
 
-	// 			useAuthStore.setState({
-	// 				isAuthenticated: true,
-	// 				user
-	// 			});
-	// 		} catch {
-	// 		} finally {
-	// 			SplashScreen.hideAsync();
-	// 		}
-	// 	};
+				useAuthStore.setState({ isAuthenticated: true, user });
+			} catch {
+			} finally {
+				SplashScreen.hideAsync();
+			}
+		};
 
-	// 	initAuth();
-	// }, []);
+		initAuth();
+	}, []);
 
 	return (
 		<KeyboardContextProvider>
