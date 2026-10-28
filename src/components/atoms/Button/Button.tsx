@@ -1,28 +1,29 @@
 import { cloneElement, type ReactElement } from 'react';
 import { Pressable, type PressableProps } from 'react-native';
+import { cva, type VariantProps } from 'class-variance-authority';
+import type { IconProps } from 'phosphor-react-native';
 import { Text } from '../Text';
 import { Loading } from '../Loading';
 import { cn } from '@/utils';
-import { cva, type VariantProps } from 'class-variance-authority';
-import type { IconProps } from 'phosphor-react-native';
 
 const buttonVariants = cva(
-	'flex-row items-center justify-center gap-2 rounded-lg p-2',
+	'flex-row items-center justify-center gap-1.5 rounded-lg border border-transparent px-2.5 active:opacity-60',
 	{
 		variants: {
 			variant: {
 				primary: 'bg-primary',
+				outline: 'border-border',
 				secondary: 'bg-secondary',
-				outline: 'border border-secondary bg-transparent',
-				error: 'bg-destructive',
-				icon: 'bg-transparent'
+				ghost: 'bg-transparent',
+				destructive: 'bg-destructive',
+				link: 'bg-transparent'
 			},
 			size: {
-				xs: 'min-h-6',
-				sm: 'min-h-9',
-				md: 'min-h-10',
-				lg: 'min-h-12',
-				xl: 'min-h-14'
+				xs: 'h-6',
+				sm: 'h-9',
+				md: 'h-10',
+				lg: 'h-12',
+				xl: 'h-14'
 			}
 		},
 		defaultVariants: {
@@ -32,14 +33,15 @@ const buttonVariants = cva(
 	}
 );
 
-const textVariants = cva('font-semibold', {
+const textVariants = cva('font-medium', {
 	variants: {
 		variant: {
-			primary: 'text-white',
-			secondary: 'text-white',
-			outline: 'text-secondary',
-			error: 'text-white',
-			icon: 'text-foreground'
+			primary: 'text-foreground',
+			outline: 'text-foreground',
+			secondary: 'text-foreground',
+			ghost: 'text-foreground',
+			destructive: 'text-foreground',
+			link: 'text-primary underline'
 		},
 		size: {
 			xs: 'text-xs',
@@ -58,16 +60,15 @@ const textVariants = cva('font-semibold', {
 type ButtonProps = Omit<PressableProps, 'children'> &
 	VariantProps<typeof buttonVariants> & {
 		title?: string;
-		icon?: ReactElement<IconProps>;
 		iconLeft?: ReactElement<IconProps>;
 		iconRight?: ReactElement<IconProps>;
 		loading?: boolean;
 		fullWidth?: boolean;
+		textClassName?: string;
 	};
 
 export const Button = ({
 	title,
-	icon,
 	iconLeft,
 	iconRight,
 	fullWidth = true,
@@ -75,6 +76,7 @@ export const Button = ({
 	size,
 	variant,
 	className,
+	textClassName,
 	disabled,
 	...props
 }: ButtonProps) => {
@@ -89,17 +91,16 @@ export const Button = ({
 		<Pressable
 			className={cn(
 				buttonVariants({ variant, size }),
-				fullWidth && !icon ? 'w-full' : 'self-start',
+				fullWidth ? 'w-full' : 'self-start',
 				isDisabled && 'opacity-60',
 				className
 			)}
 			disabled={isDisabled}
+			accessibilityRole="button"
 			{...props}
 		>
 			{loading ? (
 				<Loading size="small" className="text-white" />
-			) : icon ? (
-				renderIcon(icon)
 			) : (
 				<>
 					{iconLeft && renderIcon(iconLeft)}
@@ -108,7 +109,7 @@ export const Button = ({
 						<Text
 							numberOfLines={1}
 							size="inherit"
-							className={cn(textVariants({ variant, size }))}
+							className={cn(textVariants({ variant, size }), textClassName)}
 						>
 							{title}
 						</Text>

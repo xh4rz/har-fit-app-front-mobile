@@ -1,8 +1,11 @@
-import { Stack, useFocusEffect } from 'expo-router';
+import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useThemeColors } from '@/hooks';
 import { useRoutineStore } from '@/modules/routine/store/useRoutineStore';
+import { BackButton } from '@/components/atoms';
 
 export default function RoutineLayout() {
+	const router = useRouter();
+
 	const colors = useThemeColors();
 
 	const clearRoutine = useRoutineStore((state) => state.clearRoutine);
@@ -25,31 +28,29 @@ export default function RoutineLayout() {
 				animation: 'slide_from_left',
 				contentStyle: {
 					backgroundColor: colors.background
-				}
+				},
+				headerLeft: () => <BackButton onPress={() => router.back()} />
 			}}
 		>
 			<Stack.Screen
 				name="index"
-				options={{ headerShown: true, title: 'Routine' }}
+				options={{ title: 'Routine', headerLeft: () => null }}
 			/>
 			<Stack.Screen
 				name="create/index"
 				options={{
-					headerShown: true,
 					title: 'Create Rutine'
 				}}
 			/>
 			<Stack.Screen
 				name="create/add-exercise/index"
 				options={{
-					headerShown: true,
 					title: 'Select the exercise'
 				}}
 			/>
 			<Stack.Screen
 				name="edit/[id]"
 				options={{
-					headerShown: true,
 					title: 'Edit Routine'
 				}}
 			/>

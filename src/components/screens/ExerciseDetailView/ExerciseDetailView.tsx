@@ -65,10 +65,9 @@ export const ExerciseDetailView = () => {
 		navigation.setOptions({
 			title: exercise?.title ?? 'Exercise',
 			headerRight: () => (
-				<IconButton
-					icon={<DotsThreeOutlineVerticalIcon color={colors.primary} />}
-					onPress={() => setShowModalOptions(true)}
-				/>
+				<IconButton onPress={() => setShowModalOptions(true)}>
+					<DotsThreeOutlineVerticalIcon color={colors.primary} />
+				</IconButton>
 			)
 		});
 	}, [exercise?.title]);

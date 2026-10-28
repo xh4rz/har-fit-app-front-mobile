@@ -1,7 +1,7 @@
-import { View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Button } from '@/components/atoms';
+import { BackButton, IconButton } from '@/components/atoms';
 import { useThemeColors } from '@/hooks';
+import { PlusIcon } from 'phosphor-react-native';
 
 export default function ExerciseLayout() {
 	const router = useRouter();
@@ -19,41 +19,31 @@ export default function ExerciseLayout() {
 				animation: 'slide_from_left',
 				contentStyle: {
 					backgroundColor: colors.background
-				}
+				},
+				headerLeft: () => <BackButton onPress={() => router.back()} />
 			}}
 		>
 			<Stack.Screen
 				name="index"
 				options={{
-					headerShown: true,
 					title: 'Exercises',
+					headerLeft: () => null,
 					headerRight: () => (
-						<View>
-							<Button
-								title="Create"
-								variant="primary"
-								fullWidth={false}
-								onPress={() =>
-									router.push({
-										pathname: '/exercise/create'
-									})
-								}
-							/>
-						</View>
+						<IconButton onPress={() => router.navigate('/exercise/create')}>
+							<PlusIcon color={colors.primary} />
+						</IconButton>
 					)
 				}}
 			/>
 			<Stack.Screen
 				name="create/index"
 				options={{
-					headerShown: true,
 					title: 'Create Exercise'
 				}}
 			/>
 			<Stack.Screen
 				name="edit/[id]"
 				options={{
-					headerShown: true,
 					title: 'Edit Exercise'
 				}}
 			/>
