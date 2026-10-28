@@ -1,6 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
 import { useThemeColors } from '@/hooks';
+import { BackButton, IconButton } from '@/components/atoms';
 import { GearIcon } from 'phosphor-react-native';
 
 export default function ProfileLayout() {
@@ -18,26 +18,27 @@ export default function ProfileLayout() {
 				headerTitleStyle: { color: colors.secondary },
 				headerShadowVisible: false,
 				animation: 'slide_from_left',
-				headerRight: () => (
-					<TouchableOpacity
-						onPress={() => router.navigate('/profile/settings')}
-					>
-						<GearIcon size={24} color={colors.primary} />
-					</TouchableOpacity>
-				),
 				contentStyle: {
 					backgroundColor: colors.background
-				}
+				},
+				headerLeft: () => <BackButton onPress={() => router.back()} />,
+				headerRight: () => (
+					<IconButton onPress={() => router.navigate('/profile/settings')}>
+						<GearIcon size={24} color={colors.primary} />
+					</IconButton>
+				)
 			}}
 		>
 			<Stack.Screen
 				name="index"
-				options={{ headerShown: true, title: 'Profile' }}
+				options={{
+					title: 'Profile',
+					headerLeft: () => null
+				}}
 			/>
 			<Stack.Screen
 				name="settings/index"
 				options={{
-					headerShown: true,
 					title: 'Settings',
 					headerRight: () => null
 				}}
@@ -45,7 +46,6 @@ export default function ProfileLayout() {
 			<Stack.Screen
 				name="settings/theme"
 				options={{
-					headerShown: true,
 					title: 'Theme',
 					headerRight: () => null
 				}}

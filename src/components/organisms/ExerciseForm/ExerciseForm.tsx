@@ -7,7 +7,7 @@ import {
 	ExerciseFormData,
 	exerciseFormSchema
 } from '@/modules/exercise/validation/exerciseFormSchema';
-import { Button, Input, Separator, Text } from '@/components/atoms';
+import { Button, Separator, Text } from '@/components/atoms';
 import {
 	ExerciseInputInstructions,
 	ExerciseVideoUpload,
@@ -208,9 +208,8 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 			headerRight: () => (
 				<Button
 					title={mode === 'create' ? 'Save' : 'Update'}
-					variant="secondary"
+					variant="primary"
 					fullWidth={false}
-					textClassName="text-secondary font-bold"
 					onPress={handleSubmit(onSaveExercise)}
 					loading={loading}
 				/>
@@ -227,7 +226,7 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 				error={errors.file}
 			/>
 
-			<Input
+			{/* <Input
 				required
 				autoCapitalize="none"
 				control={control}
@@ -235,7 +234,7 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 				placeholder="Enter Exercise Name *"
 				error={errors.title}
 				variant="line"
-			/>
+			/> */}
 
 			<SelectField
 				required
