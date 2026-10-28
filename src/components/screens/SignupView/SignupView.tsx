@@ -182,6 +182,7 @@ export const SignupView = () => {
 			</View>
 			<View className="gap-4">
 				<Button
+					size="lg"
 					title="Register"
 					variant="primary"
 					onPress={handleSubmit(onRegister)}

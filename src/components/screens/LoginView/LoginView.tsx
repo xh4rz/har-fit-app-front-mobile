@@ -106,6 +106,7 @@ export const LoginView = () => {
 			</View>
 			<View className="gap-4">
 				<Button
+					size="lg"
 					title="Login"
 					variant="primary"
 					onPress={handleSubmit(onLogin)}
