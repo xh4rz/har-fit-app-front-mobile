@@ -24,15 +24,14 @@ export function AppContextProvider({ children }: AppContextProps) {
 
 	useEffect(() => {
 		const initAuth = async () => {
-			const accessToken = await SecureStorageAdapter.getItem('accessToken');
-
-			if (!accessToken) return;
-
 			try {
-				const user = await getUser();
-
-				useAuthStore.setState({ isAuthenticated: true, user });
-			} catch {
+				const accessToken = await SecureStorageAdapter.getItem('accessToken');
+				if (accessToken) {
+					const user = await getUser();
+					useAuthStore.setState({ isAuthenticated: true, user });
+				}
+			} catch (error) {
+				console.error('Error initializing authentication:', error);
 			} finally {
 				SplashScreen.hideAsync();
 			}
