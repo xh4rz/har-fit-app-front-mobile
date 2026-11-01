@@ -19,7 +19,7 @@ export const Checkbox = ({
 		<RNCheckbox
 			value={isChecked}
 			onValueChange={onChange}
-			color={isChecked ? colors.primary : undefined}
+			color={isChecked ? colors.secondary : undefined}
 			className={`${className}`}
 		/>
 	);

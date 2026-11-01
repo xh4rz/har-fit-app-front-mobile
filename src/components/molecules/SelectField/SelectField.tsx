@@ -26,11 +26,11 @@ export const SelectField = ({
 		>
 			<View className="flex-1">
 				<Text>
-					{label} {required && '*'}
+					{label} <Text className="text-secondary">{required && '*'}</Text>
 				</Text>
 
 				<Text
-					className={`text-sm ${error ? 'text-destructive' : 'text-secondary'}`}
+					className={`text-sm ${error ? 'text-destructive' : 'text-muted-foreground'}`}
 				>
 					{error || value}
 				</Text>

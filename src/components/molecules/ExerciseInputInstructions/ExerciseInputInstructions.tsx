@@ -1,16 +1,15 @@
 import React from 'react';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import {
 	useFieldArray,
 	Control,
 	Controller,
 	FieldErrors
 } from 'react-hook-form';
-import { Button, IconButton, Text } from '@/components/atoms';
+import { Button, IconButton, Text, TextInput } from '@/components/atoms';
 import { PlusIcon, XIcon } from 'phosphor-react-native';
 import { ExerciseFormData } from '@/modules/exercise/validation/exerciseFormSchema';
 import { useKeyboard, useThemeColors } from '@/hooks';
-import { cn } from '@/utils';
 
 interface ExerciseInstructionsProps {
 	control: Control<ExerciseFormData>;
@@ -36,19 +35,18 @@ export const ExerciseInputInstructions = ({
 	return (
 		<View className="gap-3 my-5">
 			<View className="flex flex-row justify-between gap-2">
-				<Text>Instructions *</Text>
+				<Text className="ml-2">Instructions *</Text>
 				<Button
 					title="Add instruction"
 					size="sm"
 					variant="outline"
-					iconLeft={<PlusIcon color={colors.primary} />}
-					className="py-0.5 px-2"
+					iconLeft={<PlusIcon color={colors.secondary} />}
+					className="border-secondary"
+					textClassName="text-secondary"
 					fullWidth={false}
 					onPress={() => {
 						const newIndex = fields.length;
-
 						append({ text: '' });
-
 						setTimeout(() => {
 							closeKeyboard();
 							openKeyboard(newIndex);
@@ -73,46 +71,41 @@ export const ExerciseInputInstructions = ({
 											ref(r);
 											registerInput(index, r);
 										}}
+										variant="line"
 										value={value}
 										onChangeText={onChange}
 										placeholder="Write instruction..."
 										multiline
 										textAlignVertical="top"
-										placeholderTextColor={colors.mutedForeground}
-										className={cn(
-											'w-full min-h-0 border border-input rounded-xl px-4 py-2',
-											'bg-transparent text-foreground dark:bg-input',
-											'focus:border-ring',
-											errorMessage &&
-												'border-destructive focus:border-2 focus:border-destructive-focused focus:bg-destructive-focused-background dark:focus:bg-destructive-focused-background'
-										)}
+										hasError={!!errorMessage}
+										className="min-h-0 pt-2 pb-2 !bg-transparent"
 									/>
 								)}
 							/>
 
 							{errorMessage && (
-								<Text className="text-destructive text-xs ml-2">
+								<Text className="text-destructive text-xs ml-1 mt-1">
 									{errorMessage}
 								</Text>
 							)}
 						</View>
 
 						<IconButton
-							// size="sm"
+							hitSlop={10}
 							onPress={() => {
 								remove(index);
 								removeInput(index);
 							}}
 							className="mr-1"
 						>
-							<XIcon color={colors.secondary} />
+							<XIcon color={colors.secondary} size={18} />
 						</IconButton>
 					</View>
 				);
 			})}
 
 			{errorsMessage && (
-				<Text className="text-destructive mt-2">{errorsMessage}</Text>
+				<Text className="text-destructive ml-2">{errorsMessage}</Text>
 			)}
 		</View>
 	);

@@ -21,7 +21,8 @@ export const PasswordVisibilityToggle = ({
 
 	const getIconColor = () => {
 		if (disabled) return colors.mutedForeground;
-		if (hasError) return colors.destructiveFocused;
+		if (hasError && focused) return colors.destructiveFocused;
+		if (hasError) return colors.destructive;
 		if (focused) return colors.ring;
 		return colors.foreground;
 	};
