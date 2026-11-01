@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
 import {
 	useFieldArray,
 	Control,
@@ -10,6 +10,7 @@ import { Button, IconButton, Text } from '@/components/atoms';
 import { PlusIcon, XIcon } from 'phosphor-react-native';
 import { ExerciseFormData } from '@/modules/exercise/validation/exerciseFormSchema';
 import { useKeyboard, useThemeColors } from '@/hooks';
+import { cn } from '@/utils';
 
 interface ExerciseInstructionsProps {
 	control: Control<ExerciseFormData>;
@@ -77,35 +78,41 @@ export const ExerciseInputInstructions = ({
 										placeholder="Write instruction..."
 										multiline
 										textAlignVertical="top"
-										className="flex-1 min-h-12 border rounded-lg px-3 py-2 text-white"
-										placeholderTextColor="#9CA3AF"
+										placeholderTextColor={colors.mutedForeground}
+										className={cn(
+											'w-full min-h-0 border border-input rounded-xl px-4 py-2',
+											'bg-transparent text-foreground dark:bg-input',
+											'focus:border-ring',
+											errorMessage &&
+												'border-destructive focus:border-2 focus:border-destructive-focused focus:bg-destructive-focused-background dark:focus:bg-destructive-focused-background'
+										)}
 									/>
 								)}
 							/>
 
 							{errorMessage && (
-								<Text className="text-red-500 text-xs ml-2">
+								<Text className="text-destructive text-xs ml-2">
 									{errorMessage}
 								</Text>
 							)}
 						</View>
 
 						<IconButton
-							variant="outline"
-							size="sm"
-							icon={<XIcon color={colors.secondary} />}
+							// size="sm"
 							onPress={() => {
 								remove(index);
 								removeInput(index);
 							}}
 							className="mr-1"
-						/>
+						>
+							<XIcon color={colors.secondary} />
+						</IconButton>
 					</View>
 				);
 			})}
 
 			{errorsMessage && (
-				<Text className="text-red-500 mt-2">{errorsMessage}</Text>
+				<Text className="text-destructive mt-2">{errorsMessage}</Text>
 			)}
 		</View>
 	);

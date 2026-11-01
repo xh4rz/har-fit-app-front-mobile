@@ -8,6 +8,7 @@ import {
 	VideoCameraIcon
 } from 'phosphor-react-native';
 import { Text } from '@/components/atoms';
+import { useThemeColors } from '@/hooks';
 
 interface Props {
 	show: boolean;
@@ -26,20 +27,22 @@ export const BottomSheetVideoOptions = ({
 	captureVideo,
 	removeVideo
 }: Props) => {
+	const colors = useThemeColors();
+
 	const sections = [
 		{
 			title: 'Select video from gallery',
-			icon: <FileVideoIcon color="white" />,
+			icon: <FileVideoIcon color={colors.foreground} />,
 			onPress: selectVideo
 		},
 		{
 			title: 'Record video',
-			icon: <VideoCameraIcon color="white" />,
+			icon: <VideoCameraIcon color={colors.foreground} />,
 			onPress: captureVideo
 		},
 		{
 			title: 'Remove video',
-			icon: <ReceiptXIcon color="white" />,
+			icon: <ReceiptXIcon color={colors.foreground} />,
 			onPress: removeVideo,
 			disabled: disabledVideo
 		}
@@ -65,7 +68,7 @@ export const BottomSheetVideoOptions = ({
 						>
 							{i.icon}
 							<Text className="text-white font-medium flex-1">{i.title}</Text>
-							<CaretRightIcon size={14} color="white" />
+							<CaretRightIcon size={14} color={colors.foreground} />
 						</TouchableOpacity>
 					);
 				})}

@@ -27,7 +27,7 @@ export const BottomSheetExerciseOptions = ({
 	const sections = [
 		{
 			title: 'Edit Exercise',
-			icon: <PencilSimpleIcon color="white" />,
+			icon: <PencilSimpleIcon color={colors.foreground} />,
 			onPress: onEditExercise
 		},
 		{

@@ -61,8 +61,8 @@ export const ExerciseView = () => {
 				<Text className="text-center text-lg font-bold">List Exercises</Text>
 			</View> */}
 
-			<View className="flex-row gap-2 p-4">
-				<View className="flex-1">
+			<View className="flex-row gap-2 p-4 ">
+				<View className="flex-1 ">
 					<Button
 						title={findEquipment?.name ?? ''}
 						loading={isPendingEquipments}

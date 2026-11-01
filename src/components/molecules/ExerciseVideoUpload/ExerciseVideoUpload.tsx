@@ -23,7 +23,7 @@ export const ExerciseVideoUpload = ({
 	const colors = useThemeColors();
 	return (
 		<TouchableOpacity
-			className={`w-full h-72 rounded-xl ${error ? 'border-red-500' : 'border-gray-500'}
+			className={`w-full h-72 rounded-xl ${error ? 'border-destructive' : 'border-border'}
 			 border-2 border-dashed items-center justify-center mb-5 p-1`}
 			onPress={openPicker}
 		>
@@ -31,15 +31,15 @@ export const ExerciseVideoUpload = ({
 				<ActivityIndicator size="large" color={colors.primary} />
 			) : error?.message ? (
 				<View className="items-center gap-2">
-					<UploadSimpleIcon size={40} color="#737373" />
-					<Text className="text-red-500 text-sm">{error.message}</Text>
+					<UploadSimpleIcon size={40} color={colors.destructive} />
+					<Text className="text-sm text-destructive">{error.message}</Text>
 				</View>
 			) : videoUri ? (
 				<VideoPlayer url={videoUri} />
 			) : (
 				<View className="items-center gap-2">
-					<UploadSimpleIcon size={40} color="#737373" />
-					<Text className="text-neutral-500 text-sm">
+					<UploadSimpleIcon size={40} color={colors.secondary} />
+					<Text className="text-foreground text-sm">
 						Upload exercise video *
 					</Text>
 				</View>
