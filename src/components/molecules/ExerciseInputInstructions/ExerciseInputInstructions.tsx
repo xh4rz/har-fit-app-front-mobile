@@ -41,7 +41,7 @@ export const ExerciseInputInstructions = ({
 					size="sm"
 					variant="outline"
 					iconLeft={<PlusIcon color={colors.secondary} />}
-					className="border-secondary"
+					className="border-secondary bg-transparent"
 					textClassName="text-secondary"
 					fullWidth={false}
 					onPress={() => {
@@ -98,7 +98,7 @@ export const ExerciseInputInstructions = ({
 							}}
 							className="mr-1"
 						>
-							<XIcon color={colors.secondary} size={18} />
+							<XIcon color={colors.destructive} size={18} />
 						</IconButton>
 					</View>
 				);

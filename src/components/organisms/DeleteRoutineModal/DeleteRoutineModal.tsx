@@ -17,6 +17,7 @@ export const DeleteRoutineModal = ({
 }: DeleteRoutineModalProps) => {
 	return (
 		<Modal
+			showIconDelete
 			description="Are you sure you want to delete this routine?"
 			visible={visible}
 			setVisible={setVisible}

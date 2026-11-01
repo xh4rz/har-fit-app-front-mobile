@@ -13,3 +13,4 @@ export * from './Separator';
 export * from './Text';
 export * from './TextInput';
 export * from './Video';
+export * from './ViewCard';

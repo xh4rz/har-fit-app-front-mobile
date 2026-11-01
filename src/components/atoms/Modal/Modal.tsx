@@ -1,6 +1,9 @@
 import React, { ReactNode } from 'react';
-import { Pressable, Modal as RNModal } from 'react-native';
+import { Pressable, Modal as RNModal, View } from 'react-native';
 import { Text } from '../Text';
+import { ViewCard } from '../ViewCard';
+import { useThemeColors } from '@/hooks';
+import { TrashIcon } from 'phosphor-react-native';
 
 interface ModalProps {
 	title?: string;
@@ -9,7 +12,7 @@ interface ModalProps {
 	setVisible: (value: boolean) => void;
 	children: ReactNode;
 	animationType?: 'none' | 'slide' | 'fade';
-	highlight?: string;
+	showIconDelete?: boolean;
 }
 
 export const Modal = ({
@@ -19,30 +22,35 @@ export const Modal = ({
 	setVisible,
 	children,
 	animationType = 'fade',
-	highlight
+	showIconDelete = false
 }: ModalProps) => {
+	const colors = useThemeColors();
 	return (
 		<RNModal
 			transparent
 			visible={visible}
 			animationType={animationType}
 			onRequestClose={() => setVisible(false)}
-			backdropColor={'red'}
+			backdropColor="red"
 		>
 			<Pressable
 				className="flex-1 justify-center items-center bg-black/60 px-4"
 				onPress={() => setVisible(false)}
 			>
-				<Pressable className="bg-card rounded-2xl p-6 w-full">
+				<ViewCard className="p-6 flex flex-col justify-center items-center">
+					{showIconDelete && (
+						<View className="mb-4 p-1 bg-muted rounded-lg">
+							<TrashIcon color={colors.destructive} />
+						</View>
+					)}
 					{title && (
 						<Text className="text-lg font-bold text-center mb-2">{title}</Text>
 					)}
-					<Text className="text-sm text-center mb-6">
+					<Text className="text-sm text-muted-foreground text-center mb-6">
 						{description}{' '}
-						{highlight && <Text className="font-bold">{highlight}</Text>}
 					</Text>
-					{children}
-				</Pressable>
+					<View className="w-full">{children}</View>
+				</ViewCard>
 			</Pressable>
 		</RNModal>
 	);

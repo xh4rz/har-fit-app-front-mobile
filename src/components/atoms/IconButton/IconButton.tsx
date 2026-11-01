@@ -5,15 +5,15 @@ import { Loading } from '../Loading';
 import { cn } from '@/utils';
 
 const iconButtonVariants = cva(
-	'items-center justify-center rounded-full border border-transparent p-0 active:opacity-60',
+	' items-center justify-center rounded-full border border-transparent p-0 active:opacity-60',
 	{
 		variants: {
 			variant: {
-				primary: 'bg-primary',
-				outline: 'border-border',
-				secondary: 'bg-secondary',
-				ghost: 'bg-transparent',
-				destructive: 'bg-destructive'
+				primary: 'bg-primary p-1',
+				outline: 'border-border p-1',
+				secondary: 'bg-secondary p-1',
+				ghost: 'bg-transparent p-0',
+				destructive: 'bg-destructive p-1'
 			}
 		},
 		defaultVariants: {
