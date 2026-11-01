@@ -228,12 +228,12 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 
 			<FormInput
 				required
-				label="Exercise Name"
+				variant="line"
 				autoCapitalize="none"
 				control={control}
 				name="title"
-				placeholder="Enter Exercise Name"
-				variant="outlined"
+				placeholder="Exercise Name"
+				inputClassName="!bg-transparent"
 			/>
 
 			<SelectField
@@ -265,8 +265,6 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 			<Separator />
 
 			<ExerciseInputInstructions control={control} error={errors.instruction} />
-
-			<Separator />
 
 			{errors.root && (
 				<Text variant="error" className="mt-2">

@@ -13,12 +13,7 @@ import {
 	Text,
 	TextInput
 } from '@/components/atoms';
-import type {
-	TextInputState,
-	TextInputVariant
-} from '@/components/atoms/TextInput';
-
-type VisualState = TextInputState;
+import type { TextInputVariant } from '@/components/atoms/TextInput';
 
 type FormInputProps<T extends FieldValues> = TextInputProps & {
 	name: FieldPath<T>;
@@ -30,6 +25,7 @@ type FormInputProps<T extends FieldValues> = TextInputProps & {
 	isPassword?: boolean;
 	variant?: TextInputVariant;
 	className?: string;
+	inputClassName?: string;
 };
 
 export const FormInput = <T extends FieldValues>({
@@ -42,6 +38,7 @@ export const FormInput = <T extends FieldValues>({
 	isPassword = false,
 	variant = 'outlined',
 	className,
+	inputClassName,
 	...textInputProps
 }: FormInputProps<T>) => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -53,14 +50,6 @@ export const FormInput = <T extends FieldValues>({
 			name={name}
 			render={({ field: { onChange, value, ref }, fieldState }) => {
 				const error = fieldState.error;
-
-				const visualState: VisualState = error
-					? isFocused
-						? 'errorFocused'
-						: 'error'
-					: isFocused
-						? 'focused'
-						: 'default';
 
 				return (
 					<View className={cn('w-full', className)}>
@@ -74,7 +63,6 @@ export const FormInput = <T extends FieldValues>({
 									disabled={disabled}
 								/>
 							)}
-
 							<TextInput
 								{...textInputProps}
 								ref={ref}
@@ -85,11 +73,10 @@ export const FormInput = <T extends FieldValues>({
 								onBlur={() => setIsFocused(false)}
 								secureTextEntry={isPassword && !showPassword}
 								variant={variant}
-								state={visualState}
 								disabled={disabled}
-								className={cn(isPassword && 'pr-12')}
+								hasError={!!error}
+								className={cn(isPassword && 'pr-12', inputClassName)}
 							/>
-
 							{isPassword && (
 								<PasswordVisibilityToggle
 									visible={showPassword}
@@ -100,7 +87,6 @@ export const FormInput = <T extends FieldValues>({
 								/>
 							)}
 						</View>
-
 						{error?.message ? (
 							<Text variant="error" className="mt-1 ml-1 text-sm">
 								{error.message}

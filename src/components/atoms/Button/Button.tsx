@@ -36,9 +36,9 @@ const buttonVariants = cva(
 const textVariants = cva('font-medium', {
 	variants: {
 		variant: {
-			primary: 'text-foreground',
+			primary: 'text-white',
 			outline: 'text-foreground',
-			secondary: 'text-foreground',
+			secondary: 'text-white',
 			ghost: 'text-foreground',
 			destructive: 'text-foreground',
 			link: 'text-primary underline'

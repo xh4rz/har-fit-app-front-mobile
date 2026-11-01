@@ -67,7 +67,9 @@ export const BottomSheetVideoOptions = ({
 							disabled={isDisabled}
 						>
 							{i.icon}
-							<Text className="text-white font-medium flex-1">{i.title}</Text>
+							<Text className="text-foreground font-medium flex-1">
+								{i.title}
+							</Text>
 							<CaretRightIcon size={14} color={colors.foreground} />
 						</TouchableOpacity>
 					);
