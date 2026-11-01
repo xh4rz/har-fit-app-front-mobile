@@ -19,15 +19,15 @@ export const DeleteExerciseModal = ({
 }: Props) => {
 	return (
 		<Modal
-			title="Delete Exercise"
-			description="Are you sure you want to delete the"
-			highlight={exerciseTitle}
+			showIconDelete
+			title={`Delete '${exerciseTitle}' Exercise`}
+			description="Are you sure you want to delete this exercise?"
 			visible={visible}
 			setVisible={setVisible}
 		>
 			<View className="flex gap-3">
 				<Button
-					title="Delete Exercise"
+					title="Delete"
 					variant="destructive"
 					onPress={onDelete}
 					loading={loading}

@@ -134,8 +134,6 @@ export const ExerciseRoutineInputSets = ({
 
 							<IconButton
 								variant="outline"
-								// size="sm"
-
 								onPress={() => {
 									remove(index);
 									removeInput(index * 2);
