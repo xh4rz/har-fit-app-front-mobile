@@ -1,6 +1,7 @@
 import { TouchableOpacity, View } from 'react-native';
-import { CaretRightIcon } from 'phosphor-react-native';
+import { useThemeColors } from '@/hooks';
 import { Text } from '@/components/atoms';
+import { CaretRightIcon } from 'phosphor-react-native';
 
 type SelectFieldProps = {
 	label: string;
@@ -17,6 +18,7 @@ export const SelectField = ({
 	required,
 	onPress
 }: SelectFieldProps) => {
+	const colors = useThemeColors();
 	return (
 		<TouchableOpacity
 			className="flex flex-row items-center p-2 rounded-md"
@@ -27,12 +29,14 @@ export const SelectField = ({
 					{label} {required && '*'}
 				</Text>
 
-				<Text className={error ? 'text-red-500' : 'text-secondary'}>
+				<Text
+					className={`text-sm ${error ? 'text-destructive' : 'text-secondary'}`}
+				>
 					{error || value}
 				</Text>
 			</View>
 
-			<CaretRightIcon size={20} color="white" />
+			<CaretRightIcon size={20} color={colors.primary} />
 		</TouchableOpacity>
 	);
 };

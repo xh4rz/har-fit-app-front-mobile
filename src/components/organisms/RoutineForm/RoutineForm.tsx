@@ -12,6 +12,7 @@ import {
 	routineFormSchema
 } from '@/modules/routine/validation/routineFormSchema';
 import { patchRoutineById, postRoutine } from '@/modules/routine/services';
+import { useThemeColors } from '@/hooks';
 import { setFormError } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { RoutineResponse } from '@/infrastructure/interfaces';
@@ -23,6 +24,8 @@ interface RoutineFormProps {
 
 export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 	const router = useRouter();
+
+	const colors = useThemeColors();
 
 	const navigation = useNavigation();
 
@@ -175,7 +178,7 @@ export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 
 			{!hasExercises() && (
 				<View className="justify-center items-center gap-4">
-					<BarbellIcon size={32} color="white" />
+					<BarbellIcon size={32} color={colors.foreground} />
 					<Text>Get started by adding an exercise to your routine.</Text>
 				</View>
 			)}
@@ -206,9 +209,7 @@ export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 				iconLeft={<PlusIcon />}
 			/>
 
-			{errors.root && (
-				<Text className="text-red-500 mt-2">{errors.root.message}</Text>
-			)}
+			{errors.root && <Text className="mt-2">{errors.root.message}</Text>}
 		</View>
 	);
 };

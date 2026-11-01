@@ -24,7 +24,7 @@ export const DeleteRoutineModal = ({
 			<View className="flex gap-3">
 				<Button
 					title="Delete Routine"
-					variant="error"
+					variant="destructive"
 					onPress={onDelete}
 					loading={loading}
 				/>

@@ -27,7 +27,7 @@ export const BottomSheetRoutineOptions = ({
 	const sections = [
 		{
 			title: 'Edit Routine',
-			icon: <PencilSimpleIcon color="white" />,
+			icon: <PencilSimpleIcon color={colors.foreground} />,
 			onPress: onEditRoutine
 		},
 		{

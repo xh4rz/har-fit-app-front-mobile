@@ -134,28 +134,30 @@ export const ExerciseRoutineInputSets = ({
 
 							<IconButton
 								variant="outline"
-								size="sm"
-								icon={<XIcon color={colors.secondary} />}
+								// size="sm"
+
 								onPress={() => {
 									remove(index);
 									removeInput(index * 2);
 									removeInput(index * 2 + 1);
 								}}
-							/>
+							>
+								<XIcon color={colors.secondary} />
+							</IconButton>
 						</View>
 
 						{(kgError || repsError) && (
 							<View className="flex-row gap-2 ml-8">
 								<View className="flex-1">
 									{kgError && (
-										<Text className="text-red-500 text-xs text-center">
+										<Text className="text-destructive text-xs text-center">
 											{kgError}
 										</Text>
 									)}
 								</View>
 								<View className="flex-1">
 									{repsError && (
-										<Text className="text-red-500 text-xs text-center">
+										<Text className="text-destructive text-xs text-center">
 											{repsError}
 										</Text>
 									)}
@@ -188,7 +190,7 @@ export const ExerciseRoutineInputSets = ({
 			/>
 
 			{errorsMessage && (
-				<Text className="text-red-500 mt-2">{errorsMessage}</Text>
+				<Text className="text-destructive mt-2">{errorsMessage}</Text>
 			)}
 		</View>
 	);

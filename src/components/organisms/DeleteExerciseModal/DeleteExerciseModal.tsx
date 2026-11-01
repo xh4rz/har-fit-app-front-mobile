@@ -28,7 +28,7 @@ export const DeleteExerciseModal = ({
 			<View className="flex gap-3">
 				<Button
 					title="Delete Exercise"
-					variant="error"
+					variant="destructive"
 					onPress={onDelete}
 					loading={loading}
 				/>

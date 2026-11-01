@@ -97,7 +97,7 @@ export const BottomSheetModal = ({
 				</BottomSheetScrollView>
 			) : (
 				<>
-					<Text className="text-lg text-center m-5">{title}</Text>
+					<Text className="text-lg text-center m-5 text-primary">{title}</Text>
 					<Separator />
 					{children}
 				</>

@@ -7,10 +7,11 @@ import {
 	ExerciseFormData,
 	exerciseFormSchema
 } from '@/modules/exercise/validation/exerciseFormSchema';
-import { Button, Separator, Text } from '@/components/atoms';
+import { IconButton, Separator, Text } from '@/components/atoms';
 import {
 	ExerciseInputInstructions,
 	ExerciseVideoUpload,
+	FormInput,
 	SelectField
 } from '@/components/molecules';
 import { BottomSheetSelectList } from '../BottomSheetSelectList';
@@ -18,12 +19,13 @@ import { BottomSheetVideoOptions } from '../BottomSheetVideoOptions';
 import { getEquipments } from '@/modules/exercise/services/equipment';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getMuscles } from '@/modules/exercise/services/muscle';
-import { usePickVideo } from '@/hooks';
+import { usePickVideo, useThemeColors } from '@/hooks';
 import {
 	postExercise,
 	patchExerciseById
 } from '@/modules/exercise/services/exercise';
 import { setFormError } from '@/utils';
+import { FloppyDiskIcon } from 'phosphor-react-native';
 
 interface ExerciseFormProps {
 	mode: 'create' | 'edit';
@@ -48,6 +50,8 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 	const navigation = useNavigation();
 
 	const queryClient = useQueryClient();
+
+	const colors = useThemeColors();
 
 	const {
 		control,
@@ -206,13 +210,9 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<Button
-					title={mode === 'create' ? 'Save' : 'Update'}
-					variant="primary"
-					fullWidth={false}
-					onPress={handleSubmit(onSaveExercise)}
-					loading={loading}
-				/>
+				<IconButton onPress={handleSubmit(onSaveExercise)} loading={loading}>
+					<FloppyDiskIcon color={colors.primary} />
+				</IconButton>
 			)
 		});
 	}, [loading]);
@@ -226,15 +226,15 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 				error={errors.file}
 			/>
 
-			{/* <Input
+			<FormInput
 				required
+				label="Exercise Name"
 				autoCapitalize="none"
 				control={control}
 				name="title"
-				placeholder="Enter Exercise Name *"
-				error={errors.title}
-				variant="line"
-			/> */}
+				placeholder="Enter Exercise Name"
+				variant="outlined"
+			/>
 
 			<SelectField
 				required
@@ -269,7 +269,9 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 			<Separator />
 
 			{errors.root && (
-				<Text className="text-red-500 mt-2">{errors.root.message}</Text>
+				<Text variant="error" className="mt-2">
+					{errors.root.message}
+				</Text>
 			)}
 
 			<BottomSheetSelectList
