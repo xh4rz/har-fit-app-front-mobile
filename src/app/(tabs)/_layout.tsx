@@ -3,8 +3,8 @@ import { useThemeColors } from '@/hooks';
 import { capitalize } from '@/utils';
 import {
 	BarbellIcon,
+	FolderPlusIcon,
 	HouseIcon,
-	IdentificationCardIcon,
 	UserIcon,
 	type Icon
 } from 'phosphor-react-native';
@@ -25,7 +25,7 @@ const tabs: TabItem[] = [
 	},
 	{
 		name: 'routine',
-		Icon: IdentificationCardIcon
+		Icon: FolderPlusIcon
 	},
 	{
 		name: 'profile',

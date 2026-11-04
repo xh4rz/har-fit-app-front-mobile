@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { Image, Text } from '@/components/atoms';
 import { useThumbnail } from '@/hooks';
-import { RoutineFormData } from '@/modules/routine/validation/routineFormSchema';
+import { RoutineFormInput } from '@/modules/routine/validation/routineFormSchema';
 import { Control, FieldErrors } from 'react-hook-form';
 import { ExerciseRoutineInputSets } from '../ExerciseRoutineInputSets';
 import { RoutineExercise } from '@/modules/routine/types/exerciseRoutine';
@@ -9,8 +9,8 @@ import { RoutineExercise } from '@/modules/routine/types/exerciseRoutine';
 type ExerciseItemProps = {
 	exercise: RoutineExercise;
 	index: number;
-	control: Control<RoutineFormData>;
-	errors: FieldErrors<RoutineFormData>;
+	control: Control<RoutineFormInput>;
+	errors: FieldErrors<RoutineFormInput>;
 };
 
 export const ExerciseRoutineItem = ({
@@ -28,8 +28,10 @@ export const ExerciseRoutineItem = ({
 					<Image url={thumbnail} />
 				</View>
 				<View className="flex-1 ml-2">
-					<Text className="text-primary">{exercise.title}</Text>
-					<Text className="text-white/40">{exercise.primaryMuscleName}</Text>
+					<Text className="text-foreground">{exercise.title}</Text>
+					<Text className="text-muted-foreground">
+						{exercise.primaryMuscleName}
+					</Text>
 				</View>
 			</View>
 			<ExerciseRoutineInputSets

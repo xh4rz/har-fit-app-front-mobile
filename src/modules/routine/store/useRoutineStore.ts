@@ -21,15 +21,10 @@ export const useRoutineStore = create<RoutineStoreState>((set, get) => ({
 	isSelecting: false,
 	exercises: [],
 	selectedExercises: [],
-
 	setIsSelecting: (value) => set({ isSelecting: value }),
-
 	setTitle: (title) => set({ title }),
-
 	setExercises: (exercises) => set(() => ({ exercises })),
-
 	setSelectedExercises: (exercises) => set({ selectedExercises: exercises }),
-
 	toggleExercise: (item) =>
 		set((state) => {
 			const exists = state.selectedExercises.some((e) => e.id === item.id);
@@ -40,7 +35,6 @@ export const useRoutineStore = create<RoutineStoreState>((set, get) => ({
 					: [...state.selectedExercises, item]
 			};
 		}),
-
 	clearRoutine: () =>
 		set({
 			title: '',
@@ -48,8 +42,6 @@ export const useRoutineStore = create<RoutineStoreState>((set, get) => ({
 			exercises: [],
 			selectedExercises: []
 		}),
-
 	hasExercises: () => get().exercises.length > 0,
-
 	isSelected: (id) => get().selectedExercises.some((e) => e.id === id)
 }));
