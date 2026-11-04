@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, TextInput } from 'react-native';
 import {
 	useFieldArray,
@@ -8,13 +8,13 @@ import {
 } from 'react-hook-form';
 import { Button, IconButton, Text } from '@/components/atoms';
 import { PlusIcon, XIcon } from 'phosphor-react-native';
-import { RoutineFormData } from '@/modules/routine/validation/routineFormSchema';
 import { useKeyboard, useThemeColors } from '@/hooks';
+import type { RoutineFormInput } from '@/modules/routine/validation/routineFormSchema';
 
 interface ExerciseRoutineInputSetsProps {
-	control: Control<RoutineFormData>;
+	control: Control<RoutineFormInput>;
 	exerciseIndex: number;
-	error: FieldErrors<RoutineFormData>['exercises'];
+	error: FieldErrors<RoutineFormInput>['exercises'];
 }
 
 type InputValue = number | string | undefined;
@@ -25,14 +25,13 @@ export const ExerciseRoutineInputSets = ({
 	error
 }: ExerciseRoutineInputSetsProps) => {
 	const colors = useThemeColors();
-
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: `exercises.${exerciseIndex}.sets`
 	});
-
 	const setsError = error?.[exerciseIndex]?.sets;
 	const errorsMessage = setsError?.message || setsError?.root?.message;
+	const initialized = useRef(false);
 
 	const { registerInput, openKeyboard, removeInput, closeKeyboard } =
 		useKeyboard();
@@ -43,9 +42,11 @@ export const ExerciseRoutineInputSets = ({
 		allowDecimal: boolean
 	) => {
 		if (text === '') {
-			onChange(undefined);
+			onChange('');
 			return;
 		}
+
+		if (text.length > 4) return;
 
 		if (!allowDecimal && text.includes('.')) return;
 
@@ -65,11 +66,27 @@ export const ExerciseRoutineInputSets = ({
 		}
 	};
 
-	const getDisplayValue = (value: InputValue) => {
-		if (typeof value === 'string') return value;
-		if (value === undefined || value === null) return '';
+	const getDisplayValue = (value: unknown) => {
+		if (value === null || value === undefined) return '';
 		return String(value);
 	};
+
+	const createSet = (set: number) => ({
+		set,
+		kg: '',
+		reps: '',
+		completed: false
+	});
+
+	useEffect(() => {
+		if (initialized.current) return;
+
+		if (fields.length === 0) {
+			append(createSet(1));
+		}
+
+		initialized.current = true;
+	}, []);
 
 	return (
 		<View className="gap-3 mt-3">
@@ -173,13 +190,7 @@ export const ExerciseRoutineInputSets = ({
 				iconLeft={<PlusIcon color={colors.primary} />}
 				onPress={() => {
 					const newIndex = fields.length;
-
-					append({
-						set: newIndex + 1,
-						kg: 0,
-						reps: 0
-					});
-
+					append(createSet(newIndex + 1));
 					setTimeout(() => {
 						closeKeyboard();
 						openKeyboard(newIndex * 2);
