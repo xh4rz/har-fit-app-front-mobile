@@ -5,7 +5,7 @@ import { Loading } from '../Loading';
 import { cn } from '@/utils';
 
 const iconButtonVariants = cva(
-	' items-center justify-center rounded-full border border-transparent p-0 active:opacity-60',
+	' items-center justify-center rounded-lg border border-transparent p-0 active:opacity-60',
 	{
 		variants: {
 			variant: {
@@ -13,7 +13,7 @@ const iconButtonVariants = cva(
 				outline: 'border-border p-1',
 				secondary: 'bg-secondary p-1',
 				ghost: 'bg-transparent p-0',
-				destructive: 'bg-destructive p-1'
+				destructive: 'bg-destructive-focused-background p-1'
 			}
 		},
 		defaultVariants: {

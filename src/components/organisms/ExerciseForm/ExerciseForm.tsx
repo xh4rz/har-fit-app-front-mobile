@@ -218,7 +218,7 @@ export const ExerciseForm = ({ defaultValues, mode }: ExerciseFormProps) => {
 	}, [loading]);
 
 	return (
-		<View className="m-6">
+		<View className="p-6">
 			<ExerciseVideoUpload
 				videoUri={file?.uri ?? ''}
 				openPicker={() => setShowModalOptionsVideo(true)}
