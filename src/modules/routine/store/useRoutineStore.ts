@@ -1,16 +1,16 @@
 import { create } from 'zustand';
-import { RoutineExercise } from '../types/exerciseRoutine';
+import { RoutineExercise } from '@/infrastructure/interfaces';
 
 export interface RoutineStoreState {
 	title: string;
 	isSelecting: boolean;
 	exercises: RoutineExercise[];
-	selectedExercises: RoutineExercise[];
+	selectedExerciseIds: string[];
 	setIsSelecting: (value: boolean) => void;
 	setTitle: (title: string) => void;
 	setExercises: (exercises: RoutineExercise[]) => void;
-	setSelectedExercises: (exercises: RoutineExercise[]) => void;
-	toggleExercise: (exercise: RoutineExercise) => void;
+	setSelectedExerciseIds: (ids: string[]) => void;
+	toggleExercise: (id: string) => void;
 	clearRoutine: () => void;
 	hasExercises: () => boolean;
 	isSelected: (id: string) => boolean;
@@ -20,28 +20,24 @@ export const useRoutineStore = create<RoutineStoreState>((set, get) => ({
 	title: '',
 	isSelecting: false,
 	exercises: [],
-	selectedExercises: [],
+	selectedExerciseIds: [],
 	setIsSelecting: (value) => set({ isSelecting: value }),
 	setTitle: (title) => set({ title }),
 	setExercises: (exercises) => set(() => ({ exercises })),
-	setSelectedExercises: (exercises) => set({ selectedExercises: exercises }),
-	toggleExercise: (item) =>
-		set((state) => {
-			const exists = state.selectedExercises.some((e) => e.id === item.id);
-
-			return {
-				selectedExercises: exists
-					? state.selectedExercises.filter((e) => e.id !== item.id)
-					: [...state.selectedExercises, item]
-			};
-		}),
+	setSelectedExerciseIds: (ids) => set({ selectedExerciseIds: ids }),
+	toggleExercise: (id) =>
+		set((state) => ({
+			selectedExerciseIds: state.selectedExerciseIds.includes(id)
+				? state.selectedExerciseIds.filter((selectedId) => selectedId !== id)
+				: [...state.selectedExerciseIds, id]
+		})),
 	clearRoutine: () =>
 		set({
 			title: '',
 			isSelecting: false,
 			exercises: [],
-			selectedExercises: []
+			selectedExerciseIds: []
 		}),
 	hasExercises: () => get().exercises.length > 0,
-	isSelected: (id) => get().selectedExercises.some((e) => e.id === id)
+	isSelected: (id) => get().selectedExerciseIds.includes(id)
 }));
