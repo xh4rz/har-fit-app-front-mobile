@@ -1,21 +1,22 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { useFocusEffect, useNavigation, useRouter } from 'expo-router';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { useNavigation, useRouter } from 'expo-router';
 import { View } from 'react-native';
-import { BarbellIcon, PlusIcon } from 'phosphor-react-native';
-import { Button, Text } from '@/components/atoms';
+import { BarbellIcon, FloppyDiskIcon, PlusIcon } from 'phosphor-react-native';
+import { Button, IconButton, Text } from '@/components/atoms';
 import { useRoutineStore } from '@/modules/routine/store/useRoutineStore';
 import { ExerciseRoutineItem, FormInput } from '@/components/molecules';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { FieldValues, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-	RoutineFormData,
+	RoutineFormInput,
+	RoutineFormOutput,
 	routineFormSchema
 } from '@/modules/routine/validation/routineFormSchema';
 import { patchRoutineById, postRoutine } from '@/modules/routine/services';
 import { useThemeColors } from '@/hooks';
 import { setFormError } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
-import { RoutineResponse } from '@/infrastructure/interfaces';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ApiError, RoutineResponse } from '@/infrastructure/interfaces';
 
 interface RoutineFormProps {
 	mode: 'create' | 'edit';
@@ -24,140 +25,160 @@ interface RoutineFormProps {
 
 export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 	const router = useRouter();
-
 	const colors = useThemeColors();
-
 	const navigation = useNavigation();
-
 	const queryClient = useQueryClient();
-
-	const [loading, setLoading] = useState(false);
-
-	const hasExercises = useRoutineStore((state) => state.hasExercises);
 	const exercises = useRoutineStore((state) => state.exercises);
+	const hasExercises = useRoutineStore((state) => state.hasExercises);
+	const setExercises = useRoutineStore((state) => state.setExercises);
+	const setSelectedExerciseIds = useRoutineStore(
+		(state) => state.setSelectedExerciseIds
+	);
 	const setIsSelecting = useRoutineStore((state) => state.setIsSelecting);
 	const clearRoutine = useRoutineStore((state) => state.clearRoutine);
-
-	const getDefaultValues = (): RoutineFormData => {
-		if (mode === 'edit' && routine) {
-			return {
-				title: routine.title,
-				exercises: routine.exercises.map((ex) => ({
-					exerciseId: ex.exerciseId,
-					sets: ex.sets
-				}))
-			};
-		}
-
-		return {
-			title: '',
-			exercises: []
-		};
-	};
 
 	const {
 		control,
 		handleSubmit,
 		setError,
-
+		clearErrors,
+		reset,
 		formState: { errors }
-	} = useForm<RoutineFormData>({
+	} = useForm<RoutineFormInput, FieldValues, RoutineFormOutput>({
 		resolver: zodResolver(routineFormSchema),
-		mode: 'onChange',
-		defaultValues: getDefaultValues()
+		mode: 'onSubmit',
+		defaultValues: {
+			title: '',
+			exercises: []
+		}
 	});
 
-	const { fields, replace } = useFieldArray({
+	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'exercises'
 	});
 
-	const onSaveRoutine = async (data: RoutineFormData) => {
-		setLoading(true);
-		try {
+	const exercisesError =
+		errors.exercises?.message || errors.exercises?.root?.message;
+
+	const { mutate: saveRoutine, isPending: loadingRoutine } = useMutation({
+		mutationFn: async (data: RoutineFormOutput) => {
 			if (mode === 'create') {
-				await postRoutine(data);
-			} else {
-				const routineId = routine?.id;
-
-				if (!routineId) {
-					setError('root', { message: 'Invalid routine id' });
-					return;
-				}
-				await patchRoutineById(routineId, data);
-				await queryClient.invalidateQueries({
-					queryKey: ['routine', routineId]
-				});
+				return postRoutine(data);
 			}
-
+			const routineId = routine?.id;
+			if (routineId) {
+				return patchRoutineById(routineId, data);
+			}
+		},
+		onSuccess: async () => {
 			await queryClient.invalidateQueries({
 				queryKey: ['routines']
 			});
-
+			const routineId = routine?.id;
+			if (routineId) {
+				await queryClient.invalidateQueries({
+					queryKey: ['routine', routine.id]
+				});
+			}
 			router.dismiss();
-		} catch (error) {
-			setFormError(setError, error);
-		} finally {
-			setLoading(false);
+		},
+		onError: (error: ApiError) => {
+			const errorObj = error;
+			setFormError(setError, errorObj);
 		}
+	});
+
+	const onSaveRoutine = (data: RoutineFormOutput) => {
+		saveRoutine(data);
+	};
+
+	const handleRemoveExercise = (index: number) => {
+		const exerciseId = fields[index].exerciseId;
+		const updatedExercises = exercises.filter(
+			(exercise) => exercise.id !== exerciseId
+		);
+		remove(index);
+		setExercises(updatedExercises);
+		setSelectedExerciseIds(updatedExercises.map(({ id }) => id));
 	};
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<Button
-					title={mode === 'create' ? 'Save' : 'Update'}
-					variant="secondary"
-					fullWidth={false}
-					disabled={!hasExercises()}
-					className="text-secondary font-bold"
+				<IconButton
 					onPress={handleSubmit(onSaveRoutine)}
-					loading={loading}
-				/>
+					disabled={!hasExercises()}
+					loading={loadingRoutine}
+				>
+					<FloppyDiskIcon color={colors.primary} />
+				</IconButton>
 			)
 		});
-	}, []);
+	}, [loadingRoutine]);
 
 	useEffect(() => {
-		if (exercises.length === 0) return;
+		const desiredExerciseIds = new Set(exercises.map(({ id }) => id));
 
-		const formExercises = exercises.map((exercise) => {
-			const existing = fields.find((f) => f.exerciseId === exercise.id);
+		const indexToRemove = fields.findIndex(
+			({ exerciseId }) => !desiredExerciseIds.has(exerciseId)
+		);
 
-			return {
-				exerciseId: exercise.id,
-				sets: existing?.sets || []
-			};
-		});
+		if (indexToRemove !== -1) {
+			remove(indexToRemove);
+			return;
+		}
 
-		replace(formExercises);
-	}, [exercises]);
+		if (exercises.length === 0) {
+			clearErrors('exercises');
+			return;
+		}
+
+		const currentExerciseIds = new Set(
+			fields.map(({ exerciseId }) => exerciseId)
+		);
+
+		const exercisesToAppend = exercises
+			.filter(({ id }) => !currentExerciseIds.has(id))
+			.map(({ id }) => ({
+				exerciseId: id,
+				sets: []
+			}));
+
+		if (exercisesToAppend.length > 0) {
+			append(exercisesToAppend);
+		}
+	}, [exercises, fields]);
 
 	useEffect(() => {
 		if (mode !== 'edit' || !routine) return;
 
-		const routineExercises = routine.exercises.map((ex) => ({
-			id: ex.exerciseId,
-			title: ex.title,
-			video: ex.video,
-			primaryMuscleName: ex.primaryMuscleName
+		const routineExercises = routine.exercises.map((exercise) => ({
+			id: exercise.exerciseId,
+			title: exercise.title,
+			video: exercise.video,
+			primaryMuscleName: exercise.primaryMuscleName
 		}));
 
-		if (exercises.length === 0) {
-			useRoutineStore.getState().setExercises(routineExercises);
-			useRoutineStore.getState().setSelectedExercises(routineExercises);
-		}
+		setExercises(routineExercises);
+		setSelectedExerciseIds(routineExercises.map(({ id }) => id));
 	}, []);
 
-	useFocusEffect(() => {
-		const { selectedExercises, exercises } = useRoutineStore.getState();
-
-		if (selectedExercises.length !== exercises.length) {
-			useRoutineStore.setState({
-				selectedExercises: exercises
+	useEffect(() => {
+		if (mode === 'edit' && routine) {
+			reset({
+				title: routine.title,
+				exercises: routine.exercises.map((ex) => ({
+					exerciseId: ex.exerciseId,
+					restTimer: ex.restTimer,
+					sets: ex.sets.map((set) => ({
+						...set,
+						completed: false
+					}))
+				}))
 			});
 		}
-	});
+	}, [routine]);
 
 	useEffect(() => {
 		return () => {
@@ -166,25 +187,26 @@ export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 	}, []);
 
 	return (
-		<View className="flex-1 items-center p-5 gap-4">
+		<View className="flex-1 items-center p-6 gap-4">
 			<FormInput
 				required
+				disabled={loadingRoutine}
+				variant="line"
 				autoCapitalize="words"
 				control={control}
 				name="title"
-				placeholder="Enter Routine Title *"
-				variant="line"
+				placeholder="Enter Title Routine *"
 			/>
 
 			{!hasExercises() && (
-				<View className="justify-center items-center gap-4">
+				<View className="justify-center items-center gap-4 my-6">
 					<BarbellIcon size={32} color={colors.foreground} />
 					<Text>Get started by adding an exercise to your routine.</Text>
 				</View>
 			)}
 
 			{fields.map((field, index) => {
-				const exercise = exercises.find((ex) => ex.id === field.exerciseId);
+				const exercise = exercises.find((item) => item.id === field.exerciseId);
 
 				if (!exercise) return null;
 
@@ -195,19 +217,25 @@ export const RoutineForm = ({ mode, routine }: RoutineFormProps) => {
 						index={index}
 						control={control}
 						errors={errors}
+						onRemove={() => handleRemoveExercise(index)}
 					/>
 				);
 			})}
 
 			<Button
 				title="Add Exercise"
-				variant="secondary"
+				variant="primary"
 				onPress={() => {
+					setSelectedExerciseIds(exercises.map(({ id }) => id));
 					setIsSelecting(true);
 					router.push('/routine/create/add-exercise');
 				}}
 				iconLeft={<PlusIcon />}
 			/>
+
+			{exercisesError && (
+				<Text className="text-destructive">{exercisesError}</Text>
+			)}
 
 			{errors.root && <Text className="mt-2">{errors.root.message}</Text>}
 		</View>

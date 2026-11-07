@@ -2,6 +2,7 @@ interface RoutineSet {
 	set: number;
 	reps: number;
 	kg: number;
+	completed: boolean;
 }
 
 interface RoutineExercise {
@@ -21,5 +22,6 @@ export interface RoutineResponse {
 		title: string;
 		video: string;
 		primaryMuscleName: string;
+		restTimer: number;
 	})[];
 }

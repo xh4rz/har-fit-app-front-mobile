@@ -18,21 +18,33 @@ export const ExerciseList = ({
 }: ExerciseListProps) => {
 	const router = useRouter();
 	const setExercises = useRoutineStore((state) => state.setExercises);
-	const selectedExercises = useRoutineStore((state) => state.selectedExercises);
+	const selectedExerciseIds = useRoutineStore(
+		(state) => state.selectedExerciseIds
+	);
 	const toggleExercise = useRoutineStore((state) => state.toggleExercise);
 	const isSelected = useRoutineStore((state) => state.isSelected);
 
 	const handlePress = (item: Exercise) => {
 		if (selectable) {
-			toggleExercise({
-				id: item.id,
-				title: item.title,
-				video: item.video,
-				primaryMuscleName: item.primaryMuscle.name
-			});
+			toggleExercise(item.id);
+			return;
 		} else {
 			onPress(item.id, item.title);
 		}
+	};
+
+	const handleConfirmSelection = () => {
+		const selectedExercises = (data ?? [])
+			.filter((exercise) => selectedExerciseIds.includes(exercise.id))
+			.map((exercise) => ({
+				id: exercise.id,
+				title: exercise.title,
+				video: exercise.video,
+				primaryMuscleName: exercise.primaryMuscle.name
+			}));
+
+		setExercises(selectedExercises);
+		router.dismiss();
 	};
 
 	return (
@@ -62,14 +74,11 @@ export const ExerciseList = ({
 				// }}
 			/>
 
-			{selectable && selectedExercises.length > 0 && (
+			{selectable && selectedExerciseIds.length > 0 && (
 				<View className="absolute bottom-4 left-0 right-0">
 					<Button
-						title={`Add Exercises (${selectedExercises.length})`}
-						onPress={() => {
-							setExercises(selectedExercises);
-							router.dismiss();
-						}}
+						title={`Add Exercises (${selectedExerciseIds.length})`}
+						onPress={handleConfirmSelection}
 					/>
 				</View>
 			)}

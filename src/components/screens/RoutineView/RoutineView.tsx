@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Button, Text } from '@/components/atoms';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -10,6 +9,7 @@ import {
 } from '@/components/organisms';
 import { LoadingView, RoutineCard } from '@/components/molecules';
 import { deleteRoutineById, getRoutines } from '@/modules/routine/services';
+import { FilePlusIcon } from 'phosphor-react-native';
 
 export const RoutineView = () => {
 	const router = useRouter();
@@ -57,12 +57,9 @@ export const RoutineView = () => {
 			<Text className="font-bold text-lg">Routines</Text>
 			<Button
 				title="New Routine"
-				bg="bg-zinc-800"
 				fullWidth={false}
 				onPress={() => router.push('/routine/create')}
-				iconLeft={
-					<MaterialCommunityIcons name="file-document-plus-outline" size={24} />
-				}
+				iconLeft={<FilePlusIcon />}
 			/>
 
 			{routine?.length !== 0 && (
