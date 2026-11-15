@@ -36,6 +36,7 @@ export const ExerciseRoutineItem = ({
 			<ExerciseRoutineSets
 				control={control}
 				exerciseIndex={index}
+				exerciseTitle={exercise.title ?? ''}
 				error={errors.exercises}
 				isWorkout={isWorkout}
 			/>
