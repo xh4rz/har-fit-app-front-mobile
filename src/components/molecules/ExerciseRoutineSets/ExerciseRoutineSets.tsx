@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import {
 	useFieldArray,
+	useController,
 	Control,
 	Controller,
 	FieldErrors
@@ -15,11 +16,14 @@ import {
 	TextInput
 } from '@/components/atoms';
 import { useKeyboard, useThemeColors } from '@/hooks';
-import { PlusIcon, XIcon } from 'phosphor-react-native';
+import { RestTimerSheet } from '../RestTimerSheet';
+import { formatRestTime, getRestTimerOptions } from '@/utils';
+import { ClockIcon, PlusIcon, XIcon } from 'phosphor-react-native';
 
 interface ExerciseRoutineSetsProps {
 	control: Control<RoutineFormInput>;
 	exerciseIndex: number;
+	exerciseTitle: string;
 	error: FieldErrors<RoutineFormInput>['exercises'];
 	isWorkout?: boolean;
 }
@@ -29,6 +33,7 @@ type InputValue = number | string;
 export const ExerciseRoutineSets = ({
 	control,
 	exerciseIndex,
+	exerciseTitle,
 	error,
 	isWorkout = false
 }: ExerciseRoutineSetsProps) => {
@@ -40,6 +45,11 @@ export const ExerciseRoutineSets = ({
 	const setsError = error?.[exerciseIndex]?.sets;
 	const errorsMessage = setsError?.message || setsError?.root?.message;
 	const initialized = useRef(false);
+	const [showTimerSheet, setShowTimerSheet] = useState(false);
+	const { field: restTimerField } = useController({
+		control,
+		name: `exercises.${exerciseIndex}.restTimer`
+	});
 
 	const { registerInput, openKeyboard, removeInput, closeKeyboard } =
 		useKeyboard();
@@ -86,6 +96,15 @@ export const ExerciseRoutineSets = ({
 		completed: false
 	});
 
+	const handleAddSet = () => {
+		const newIndex = fields.length;
+		append(createSet(newIndex + 1));
+		setTimeout(() => {
+			closeKeyboard();
+			openKeyboard(newIndex * 2);
+		}, 150);
+	};
+
 	useEffect(() => {
 		if (initialized.current) return;
 
@@ -98,6 +117,16 @@ export const ExerciseRoutineSets = ({
 
 	return (
 		<View>
+			<Button
+				size="sm"
+				variant="outline"
+				title={`Rest: ${formatRestTime(restTimerField.value ?? 0)}`}
+				fullWidth={false}
+				className="mb-4"
+				iconLeft={<ClockIcon color={colors.primary} />}
+				onPress={() => setShowTimerSheet(true)}
+			/>
+
 			<View className="flex-row items-center">
 				<Text className="w-8 text-center">SET</Text>
 				<Text className="flex-1 text-center">KG</Text>
@@ -225,21 +254,23 @@ export const ExerciseRoutineSets = ({
 				variant="outline"
 				iconLeft={<PlusIcon color={colors.secondary} />}
 				textClassName="text-secondary"
-				onPress={() => {
-					const newIndex = fields.length;
-
-					append(createSet(newIndex + 1));
-
-					setTimeout(() => {
-						closeKeyboard();
-						openKeyboard(newIndex * 2);
-					}, 150);
-				}}
+				onPress={handleAddSet}
 			/>
 
 			{!!errorsMessage && (
 				<Text className="text-sm text-destructive">{errorsMessage}</Text>
 			)}
+
+			<RestTimerSheet
+				visible={showTimerSheet}
+				data={getRestTimerOptions}
+				exerciseTitle={exerciseTitle}
+				onClose={() => setShowTimerSheet(false)}
+				onConfirm={(seconds) => {
+					restTimerField.onChange(seconds);
+					setShowTimerSheet(false);
+				}}
+			/>
 		</View>
 	);
 };

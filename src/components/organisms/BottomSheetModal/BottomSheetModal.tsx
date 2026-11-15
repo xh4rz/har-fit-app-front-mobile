@@ -1,10 +1,11 @@
 import React, {
-	ReactNode,
 	useRef,
 	useEffect,
 	useCallback,
-	useMemo
+	useMemo,
+	type ReactNode
 } from 'react';
+import { Keyboard, View } from 'react-native';
 import {
 	BottomSheetBackdrop,
 	BottomSheetModal as BottomSheetModalGorhom,
@@ -13,10 +14,10 @@ import {
 import { useThemeColors } from '@/hooks';
 import { Separator, Text } from '@/components/atoms';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Keyboard } from 'react-native';
 
 interface BottomSheetModalListProps {
 	title: string;
+	description?: string;
 	show: boolean;
 	setShow: (value: boolean) => void;
 	children: ReactNode;
@@ -26,6 +27,7 @@ interface BottomSheetModalListProps {
 
 export const BottomSheetModal = ({
 	title,
+	description,
 	show,
 	setShow,
 	children,
@@ -97,7 +99,14 @@ export const BottomSheetModal = ({
 				</BottomSheetScrollView>
 			) : (
 				<>
-					<Text className="text-lg text-center m-5 text-primary">{title}</Text>
+					<View className="mt-2 mb-4">
+						<Text className="text-lg text-center text-secondary">{title}</Text>
+						{description && (
+							<Text className="text-center text-muted-foreground">
+								{description}
+							</Text>
+						)}
+					</View>
 					<Separator />
 					{children}
 				</>
