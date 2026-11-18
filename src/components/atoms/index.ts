@@ -2,6 +2,7 @@ export * from './AppBrand';
 export * from './AppVersion';
 export * from './BackButton';
 export * from './Button';
+export * from './Card';
 export * from './Checkbox';
 export * from './FormLabel';
 export * from './IconButton';

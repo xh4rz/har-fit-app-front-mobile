@@ -1,39 +1,42 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { BottomSheetModal } from '../BottomSheetModal';
+import { Text } from '@/components/atoms';
+import { useThemeColors } from '@/hooks';
 import {
 	CaretRightIcon,
 	PencilSimpleIcon,
 	TrashIcon
 } from 'phosphor-react-native';
-import { Text } from '@/components/atoms';
-import { useThemeColors } from '@/hooks';
 
-interface Props {
+interface BottomSheetOptionsProps {
 	show: boolean;
 	setShow: (value: boolean) => void;
-	onEditExercise: () => void;
-	onDeleteExercise: () => void;
+	editLabel: string;
+	deleteLabel: string;
+	onEdit: () => void;
+	onDelete: () => void;
 }
 
-export const BottomSheetExerciseOptions = ({
+export const BottomSheetOptions = ({
 	show,
 	setShow,
-	onEditExercise,
-	onDeleteExercise
-}: Props) => {
+	editLabel,
+	deleteLabel,
+	onEdit,
+	onDelete
+}: BottomSheetOptionsProps) => {
 	const colors = useThemeColors();
-
 	const sections = [
 		{
-			title: 'Edit Exercise',
+			title: editLabel,
 			icon: <PencilSimpleIcon color={colors.foreground} />,
-			onPress: onEditExercise
+			onPress: onEdit
 		},
 		{
-			title: 'Delete Exercise',
+			title: deleteLabel,
 			icon: <TrashIcon color={colors.destructive} />,
-			onPress: onDeleteExercise
+			onPress: onDelete
 		}
 	];
 
