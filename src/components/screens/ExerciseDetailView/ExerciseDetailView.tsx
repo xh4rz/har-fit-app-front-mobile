@@ -3,10 +3,9 @@ import { View } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { IconButton, Text } from '@/components/atoms';
-import { LoadingView } from '@/components/molecules';
+import { DeleteModal, LoadingView } from '@/components/molecules';
 import {
-	BottomSheetExerciseOptions,
-	DeleteExerciseModal,
+	BottomSheetOptions,
 	ExerciseDetail
 } from '@/components/organisms';
 import {
@@ -88,15 +87,18 @@ export const ExerciseDetailView = () => {
 		<View className="flex-1">
 			<ExerciseDetail exercise={exercise} />
 
-			<BottomSheetExerciseOptions
+			<BottomSheetOptions
 				show={showModalOptions}
 				setShow={setShowModalOptions}
-				onEditExercise={handleEditExercise}
-				onDeleteExercise={handleDeleteExercise}
+				editLabel="Edit Exercise"
+				deleteLabel="Delete Exercise"
+				onEdit={handleEditExercise}
+				onDelete={handleDeleteExercise}
 			/>
 
-			<DeleteExerciseModal
-				exerciseTitle={exercise.title}
+			<DeleteModal
+				title={`Delete '${exercise.title}' Exercise`}
+				description="Are you sure you want to delete this exercise?"
 				visible={showModalDeleteExercise}
 				setVisible={setShowModalDeleteExercise}
 				onDelete={deleteExercise}
