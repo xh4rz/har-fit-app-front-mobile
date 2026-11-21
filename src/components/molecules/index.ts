@@ -14,3 +14,4 @@ export * from './ExerciseSummaryItem';
 export * from './RestTimerSheet';
 export * from './RoutineItem';
 export * from './DeleteModal';
+export * from './WorkoutStats';

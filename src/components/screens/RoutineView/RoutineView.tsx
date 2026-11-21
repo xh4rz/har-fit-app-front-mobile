@@ -3,10 +3,10 @@ import { ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteRoutineById, getRoutines } from '@/modules/routine/services';
-// import { useWorkoutStore } from '@/modules/workout/store/useWorkoutStore';
+import { useWorkoutStore } from '@/modules/workout/store/useWorkoutStore';
 import { Button, Text } from '@/components/atoms';
 import { LoadingView, DeleteModal, RoutineItem } from '@/components/molecules';
-// import { useTimer } from '@/hooks';
+import { useTimer } from '@/hooks';
 import { FilePlusIcon } from 'phosphor-react-native';
 
 export const RoutineView = () => {
@@ -17,11 +17,11 @@ export const RoutineView = () => {
 	const [showModalDeleteRoutine, setShowModalDeleteRoutine] = useState(false);
 	const [scrollViewHeight, setScrollViewHeight] = useState(0);
 	const [contentHeight, setContentHeight] = useState(0);
-	// const routineId = useWorkoutStore((state) => state.routineId);
-	// const startedAt = useWorkoutStore((state) => state.startedAt);
-	// const finishWorkout = useWorkoutStore((state) => state.finishWorkout);
-	// const { formattedTime } = useTimer(startedAt);
-	// const hasWorkoutInProgress = !!routineId && !!startedAt;
+	const routineId = useWorkoutStore((state) => state.routineId);
+	const startedAt = useWorkoutStore((state) => state.startedAt);
+	const clearWorkout = useWorkoutStore((state) => state.clearWorkout);
+	const { formattedTime } = useTimer(startedAt);
+	const hasWorkoutInProgress = !!routineId && !!startedAt;
 
 	const { data: dataRoutines, isPending: isPendingRoutines } = useQuery({
 		queryKey: ['routines'],
@@ -42,8 +42,10 @@ export const RoutineView = () => {
 	};
 
 	const handleStartRoutine = (id: string) => {
-		// finishWorkout();
-		// router.push(`/workout/${id}`);
+		if (routineId !== id) {
+			clearWorkout();
+		}
+		router.replace(`/workout/${id}`);
 	};
 
 	const { mutate: deleteRoutine, isPending: isPendingDeleteRoutine } =
@@ -89,16 +91,16 @@ export const RoutineView = () => {
 						}}
 					>
 						{dataRoutines?.map((routine) => {
-							// const isActive = routine.id === routineId;
-							// const isStartDisabled = hasWorkoutInProgress && !isActive;
+							const isActive = routine.id === routineId;
+							const isStartDisabled = hasWorkoutInProgress && !isActive;
 
 							return (
 								<RoutineItem
 									key={routine.id}
 									routine={routine}
-									isActive={false}
-									isStartDisabled={false}
-									timer={''}
+									isActive={isActive}
+									isStartDisabled={isStartDisabled}
+									timer={formattedTime}
 									onEdit={() => handleEditRoutine(routine.id)}
 									onDelete={() =>
 										handleDeleteRoutine(routine.id, routine.title)

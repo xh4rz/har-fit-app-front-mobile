@@ -38,9 +38,9 @@ export default function TabsLayout() {
 
 	const colors = useThemeColors();
 
-	const hideTabs = ['/routine/create', '/routine/create/add-exercise'].includes(
-		pathName
-	);
+	const hideTabs =
+		['/routine/create', '/routine/create/add-exercise'].includes(pathName) ||
+		pathName.startsWith('/workout');
 
 	return (
 		<Tabs
@@ -72,6 +72,7 @@ export default function TabsLayout() {
 					}}
 				/>
 			))}
+			<Tabs.Screen name="workout" options={{ href: null }} />
 		</Tabs>
 	);
 }

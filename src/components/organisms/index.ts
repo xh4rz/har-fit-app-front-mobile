@@ -7,3 +7,4 @@ export * from './BottomSheetOptions';
 export * from './ExerciseForm';
 export * from './TabView';
 export * from './RoutineForm';
+export * from './WorkoutForm';
