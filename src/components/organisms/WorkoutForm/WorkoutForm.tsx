@@ -207,7 +207,7 @@ export const WorkoutForm = ({ mode, routine }: WorkoutFormProps) => {
 				</IconButton>
 			)
 		});
-	}, [loadingWorkout]);
+	}, [loadingWorkout, workoutSets]);
 
 	return (
 		<View className="flex-1 items-center p-6 gap-4">
