@@ -1,6 +1,25 @@
+import { cva } from 'class-variance-authority';
+import { View } from 'react-native';
 import { Text } from '../Text';
 import { TextInputVariant } from '../TextInput';
-import { cn } from '@/utils';
+
+const labelVariants = cva('', {
+	variants: {
+		variant: {
+			line: 'text-sm',
+			outlined: 'text-xs font-medium'
+		},
+		state: {
+			error: 'text-destructive',
+			disabled: 'text-muted-foreground',
+			default: 'text-foreground'
+		}
+	},
+	defaultVariants: {
+		variant: 'outlined',
+		state: 'default'
+	}
+});
 
 interface FormLabelProps {
 	label: string;
@@ -17,23 +36,25 @@ export const FormLabel = ({
 	variant,
 	disabled = false
 }: FormLabelProps) => {
-	const labelClassName = cn(
-		variant === 'line'
-			? 'text-sm'
-			: 'absolute z-10 top-2 left-4 text-xs font-medium',
-		{
-			'text-destructive': hasError,
-			'text-muted-foreground': !hasError && disabled,
-			'text-foreground': !hasError && !disabled
-		}
-	);
-
+	const state = hasError ? 'error' : disabled ? 'disabled' : 'default';
 	const requiredClassName = hasError ? 'text-destructive' : 'text-secondary';
 
 	return (
-		<Text className={labelClassName}>
-			{label}
-			{required && <Text className={requiredClassName}>{' *'}</Text>}
-		</Text>
+		<View
+			className={
+				variant === 'line'
+					? 'flex-row items-start'
+					: 'absolute top-2 left-4 flex-row items-start'
+			}
+		>
+			<Text className={labelVariants({ variant, state })}>{label}</Text>
+			{required && (
+				<Text
+					className={`text-lg leading-none self-start ml-1 ${requiredClassName}`}
+				>
+					*
+				</Text>
+			)}
+		</View>
 	);
 };

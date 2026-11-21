@@ -5,3 +5,4 @@ export * from './formatRestTime';
 export * from './getRestTimerOptions';
 export * from './parseAxiosError';
 export * from './setFormError';
+export * from './formatDuration';

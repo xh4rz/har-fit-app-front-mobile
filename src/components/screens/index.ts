@@ -9,3 +9,5 @@ export * from './RoutineEditView';
 export * from './RoutineView';
 export * from './SignupView';
 export * from './SplashView';
+export * from './WorkoutView';
+export * from './WorkoutSuccessView';
